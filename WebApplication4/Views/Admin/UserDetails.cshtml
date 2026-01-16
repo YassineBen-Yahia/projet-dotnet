@@ -1,0 +1,287 @@
+@using WebApplication4.Models
+@model ApplicationUser
+@{
+    ViewData["Title"] = "User Details";
+    var roles = ViewBag.Roles as IList<string>;
+    var properties = ViewBag.Properties as List<Property>;
+    var requests = ViewBag.Requests as List<Request>;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-person-circle"></i> User Details</h2>
+        </div>
+        <div>
+            <a asp-controller="Admin" asp-action="Users" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Users
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- User Profile Card -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 100px; height: 100px; font-size: 2.5rem;">
+                        @(Model.FirstName?.Substring(0, 1))@(Model.LastName?.Substring(0, 1))
+                    </div>
+                    <h4>@Model.FirstName @Model.LastName</h4>
+                    <p class="text-muted">@Model.Email</p>
+                    <div class="mb-3">
+                        @if (roles != null && roles.Any())
+                        {
+                            @foreach (var role in roles)
+                            {
+                                <span class="badge bg-@(role == "Admin" ? "danger" : role == "Agent" ? "primary" : "secondary") me-1">
+                                    @role
+                                </span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="badge bg-light text-dark">No Role</span>
+                        }
+                    </div>
+                    <hr>
+                    <div class="text-start">
+                        <p class="mb-2">
+                            <i class="bi bi-person-badge"></i> <strong>User ID:</strong><br>
+                            <small class="text-muted">@Model.Id</small>
+                        </p>
+                        <p class="mb-2">
+                            <i class="bi bi-phone"></i> <strong>Phone:</strong><br>
+                            <small class="text-muted">@(Model.PhoneNumber ?? "Not provided")</small>
+                        </p>
+                        <p class="mb-2">
+                            <i class="bi bi-envelope-check"></i> <strong>Email Status:</strong><br>
+                            @if (Model.EmailConfirmed)
+                            {
+                                <span class="badge bg-success">Confirmed</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">Not Confirmed</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- Role Management Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-shield-check"></i> Role Management</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Assign or remove roles for this user</p>
+                    <div class="row">
+                        @foreach (var roleName in new[] { "Admin", "Agent", "Client" })
+                        {
+                            var hasRole = roles != null && roles.Contains(roleName);
+                            <div class="col-md-4 mb-3">
+                                <div class="card @(hasRole ? "border-primary" : "")">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-@(roleName == "Admin" ? "shield-fill-exclamation" : roleName == "Agent" ? "briefcase-fill" : "person-fill") fs-3 mb-2 text-@(roleName == "Admin" ? "danger" : roleName == "Agent" ? "primary" : "secondary")"></i>
+                                        <h6>@roleName</h6>
+                                        <form asp-controller="Admin" asp-action="ToggleUserRole" method="post" class="mt-2">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="userId" value="@Model.Id" />
+                                            <input type="hidden" name="role" value="@roleName" />
+                                            <button type="submit" class="btn btn-sm btn-@(hasRole ? "danger" : "success") w-100">
+                                                @if (hasRole)
+                                                {
+                                                    <i class="bi bi-dash-circle"></i> <text>Remove</text>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-plus-circle"></i> <text>Add</text>
+                                                }
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-info text-white shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="mb-0">@(properties?.Count ?? 0)</h3>
+                            <small>Properties Owned</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-warning text-white shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="mb-0">@(requests?.Count ?? 0)</h3>
+                            <small>Requests Made</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="mb-0">@((Model.SentMessages?.Count ?? 0) + (Model.ReceivedMessages?.Count ?? 0))</h3>
+                            <small>Total Messages</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properties Tab -->
+            @if (properties != null && properties.Any())
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-house-door"></i> Properties (@properties.Count)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var property in properties)
+                                    {
+                                        <tr>
+                                            <td>@property.Title</td>
+                                            <td>@property.Price.ToString("C")</td>
+                                            <td><span class="badge bg-info">@property.Status</span></td>
+                                            <td>
+                                                <a asp-controller="Properties" asp-action="Details" asp-route-id="@property.Id" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Requests Tab -->
+            @if (requests != null && requests.Any())
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Requests (@requests.Count)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Property</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var request in requests)
+                                    {
+                                        <tr>
+                                            <td>@request.Property?.Title</td>
+                                            <td>
+                                                <span class="badge bg-@(request.Status == "Approved" ? "success" : request.Status == "Rejected" ? "danger" : "warning")">
+                                                    @request.Status
+                                                </span>
+                                            </td>
+                                            <td>@request.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                <a asp-controller="Requests" asp-action="Details" asp-route-id="@request.Id" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Danger Zone -->
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Danger Zone</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Once you delete a user, there is no going back. Please be certain.</p>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal">
+                        <i class="bi bi-trash"></i> Delete User
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Delete User</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to permanently delete <strong>@Model.FirstName @Model.LastName</strong>?</p>
+                <p class="text-danger"><i class="bi bi-exclamation-triangle"></i> This will also delete:</p>
+                <ul>
+                    <li>All properties owned by this user</li>
+                    <li>All requests made by this user</li>
+                    <li>All messages sent/received by this user</li>
+                </ul>
+                <p class="text-danger"><strong>This action cannot be undone!</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@Model.Id" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Yes, Delete User
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

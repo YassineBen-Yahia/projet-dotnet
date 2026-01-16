@@ -1,0 +1,103 @@
+@model IEnumerable<WebApplication4.Models.Message>
+@{
+    ViewData["Title"] = "Received Messages";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-inbox"></i> Received Messages</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> New Message
+        </a>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Index">
+                <i class="bi bi-envelope"></i> All Messages
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" asp-action="Received">
+                <i class="bi bi-inbox"></i> Received
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Sent">
+                <i class="bi bi-send"></i> Sent
+            </a>
+        </li>
+    </ul>
+
+    @if (Model.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="list-group list-group-flush">
+                @foreach (var message in Model)
+                {
+                    <div class="list-group-item list-group-item-action">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px; font-size: 0.9rem;">
+                                        @(message.FromUser?.FirstName?.Substring(0, 1))@(message.FromUser?.LastName?.Substring(0, 1))
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">
+                                            From: @message.FromUser?.FirstName @message.FromUser?.LastName
+                                        </h6>
+                                        <small class="text-muted">@message.FromUser?.Email</small>
+                                    </div>
+                                </div>
+                                <h5 class="mb-1">@message.Subject</h5>
+                                <p class="mb-1 text-muted">
+                                    @if (message.Body.Length > 150)
+                                    {
+                                        @message.Body.Substring(0, 150)<text>...</text>
+                                    }
+                                    else
+                                    {
+                                        @message.Body
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <small class="text-muted d-block mb-2">
+                                    <i class="bi bi-clock"></i> @message.SentAt.ToString("MMM dd, yyyy hh:mm tt")
+                                </small>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Details" asp-route-id="@message.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                    <a asp-action="Reply" asp-route-id="@message.Id" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-reply"></i> Reply
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@message.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this message?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mt-3 text-muted">
+            <i class="bi bi-info-circle"></i> Showing @Model.Count() received message(s)
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center" role="alert">
+            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+            <h4 class="mt-3">No Received Messages</h4>
+            <p>You haven't received any messages yet.</p>
+        </div>
+    }
+</div>
+

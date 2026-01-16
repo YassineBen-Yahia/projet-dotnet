@@ -1,0 +1,372 @@
+@using WebApplication4.Models
+@{
+    ViewData["Title"] = "My Account";
+    var user = ViewBag.User as ApplicationUser;
+    var roles = ViewBag.Roles as IList<string>;
+    var ownedProperties = ViewBag.OwnedProperties as List<Property>;
+    var userRequests = ViewBag.UserRequests as List<Request>;
+    var propertyRequests = ViewBag.PropertyRequests as List<Request>;
+    var receivedMessages = ViewBag.ReceivedMessages as List<Message>;
+    var sentMessages = ViewBag.SentMessages as List<Message>;
+    var isAgentOrAdmin = roles != null && (roles.Contains("Admin") || roles.Contains("Agent"));
+}
+
+<div class="container mt-4">
+    <!-- User Profile Header -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-2 text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 2rem;">
+                        @(user?.FirstName?.Substring(0, 1))@(user?.LastName?.Substring(0, 1))
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h2 class="mb-1">@user?.FirstName @user?.LastName</h2>
+                            <p class="text-muted mb-2">@user?.Email</p>
+                            <div>
+                                @foreach (var role in roles ?? new List<string>())
+                                {
+                                    <span class="badge bg-primary me-1">@role</span>
+                                }
+                            </div>
+                        </div>
+                        @if (isAgentOrAdmin)
+                        {
+                            <div>
+                                <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">
+                                    <i class="bi bi-speedometer2"></i> Dashboard
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        @if (isAgentOrAdmin)
+        {
+            <div class="col-md-3">
+                <div class="card bg-primary text-white shadow-sm">
+                    <div class="card-body text-center">
+                        <h3 class="mb-0">@(ownedProperties?.Count ?? 0)</h3>
+                        <small>My Properties</small>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">@(userRequests?.Count ?? 0)</h3>
+                    <small>My Requests</small>
+                </div>
+            </div>
+        </div>
+        @if (isAgentOrAdmin)
+        {
+            <div class="col-md-3">
+                <div class="card bg-warning text-white shadow-sm">
+                    <div class="card-body text-center">
+                        <h3 class="mb-0">@(propertyRequests?.Count ?? 0)</h3>
+                        <small>Property Requests</small>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">@((receivedMessages?.Count ?? 0) + (sentMessages?.Count ?? 0))</h3>
+                    <small>Messages</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs mb-4" id="accountTabs" role="tablist">
+        @if (isAgentOrAdmin)
+        {
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="properties-tab" data-bs-toggle="tab" data-bs-target="#properties" type="button" role="tab">
+                    <i class="bi bi-house-door"></i> My Properties (@(ownedProperties?.Count ?? 0))
+                </button>
+            </li>
+        }
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(isAgentOrAdmin ? "" : "active")" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests" type="button" role="tab">
+                <i class="bi bi-clipboard-check"></i> My Requests (@(userRequests?.Count ?? 0))
+            </button>
+        </li>
+        @if (isAgentOrAdmin)
+        {
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="property-requests-tab" data-bs-toggle="tab" data-bs-target="#property-requests" type="button" role="tab">
+                    <i class="bi bi-inbox"></i> Property Requests (@(propertyRequests?.Count ?? 0))
+                </button>
+            </li>
+        }
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab">
+                <i class="bi bi-envelope"></i> Messages
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tabs Content -->
+    <div class="tab-content" id="accountTabsContent">
+        <!-- My Properties Tab -->
+        @if (isAgentOrAdmin)
+        {
+            <div class="tab-pane fade show active" id="properties" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4>My Properties</h4>
+                    <a asp-controller="Properties" asp-action="Create" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle"></i> Add Property
+                    </a>
+                </div>
+                
+                @if (ownedProperties != null && ownedProperties.Any())
+                {
+                    <div class="row">
+                        @foreach (var property in ownedProperties)
+                        {
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card h-100 shadow-sm">
+                                    @if (property.Images != null && property.Images.Any())
+                                    {
+                                        <img src="@property.Images.First().Url" class="card-img-top" alt="@property.Title" style="height: 200px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 200px;">
+                                            <i class="bi bi-house-door" style="font-size: 3rem;"></i>
+                                        </div>
+                                    }
+                                    <div class="card-body">
+                                        <h5 class="card-title">@property.Title</h5>
+                                        <p class="text-muted small mb-2">
+                                            <i class="bi bi-geo-alt"></i> @(property.Address ?? "N/A")
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge bg-info">@property.Status</span>
+                                            <span class="fw-bold text-primary">@property.Price.ToString("C")</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between text-muted small mb-3">
+                                            <span><i class="bi bi-door-closed"></i> @property.Bedrooms BD</span>
+                                            <span><i class="bi bi-droplet"></i> @property.Bathrooms BA</span>
+                                            <span><i class="bi bi-rulers"></i> @property.Area sq ft</span>
+                                        </div>
+                                        <div class="btn-group w-100" role="group">
+                                            <a asp-controller="Properties" asp-action="Details" asp-route-id="@property.Id" class="btn btn-sm btn-outline-primary">View</a>
+                                            <a asp-controller="Properties" asp-action="Edit" asp-route-id="@property.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> You haven't created any properties yet. 
+                        <a asp-controller="Properties" asp-action="Create" class="alert-link">Create your first property</a>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- My Requests Tab -->
+        <div class="tab-pane fade @(isAgentOrAdmin ? "" : "show active")" id="requests" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>My Requests</h4>
+                <a asp-controller="Requests" asp-action="Create" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle"></i> New Request
+                </a>
+            </div>
+            
+            @if (userRequests != null && userRequests.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Notes</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var request in userRequests)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if (request.Property?.Images != null && request.Property.Images.Any())
+                                            {
+                                                <img src="@request.Property.Images.First().Url" alt="@request.Property.Title" class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;" />
+                                            }
+                                            <div>
+                                                <strong>@request.Property?.Title</strong><br />
+                                                <small class="text-muted">@request.Property?.Price.ToString("C")</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@(request.Notes.Length > 50 ? request.Notes.Substring(0, 50) + "..." : request.Notes)</td>
+                                    <td>
+                                        <span class="badge bg-@(request.Status == "Approved" ? "success" : request.Status == "Rejected" ? "danger" : "warning")">
+                                            @request.Status
+                                        </span>
+                                    </td>
+                                    <td>@request.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <a asp-controller="Requests" asp-action="Details" asp-route-id="@request.Id" class="btn btn-sm btn-outline-primary">View</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> You haven't made any requests yet.
+                    <a asp-controller="Requests" asp-action="Create" class="alert-link">Create your first request</a>
+                </div>
+            }
+        </div>
+
+        <!-- Property Requests Tab -->
+        @if (isAgentOrAdmin)
+        {
+            <div class="tab-pane fade" id="property-requests" role="tabpanel">
+                <h4 class="mb-3">Requests for My Properties</h4>
+                
+                @if (propertyRequests != null && propertyRequests.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Requester</th>
+                                    <th>Notes</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var request in propertyRequests)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@request.Property?.Title</strong><br />
+                                            <small class="text-muted">@request.Property?.Price.ToString("C")</small>
+                                        </td>
+                                        <td>
+                                            @request.User?.FirstName @request.User?.LastName<br />
+                                            <small class="text-muted">@request.User?.Email</small>
+                                        </td>
+                                        <td>@(request.Notes.Length > 40 ? request.Notes.Substring(0, 40) + "..." : request.Notes)</td>
+                                        <td>
+                                            <span class="badge bg-@(request.Status == "Approved" ? "success" : request.Status == "Rejected" ? "danger" : "warning")">
+                                                @request.Status
+                                            </span>
+                                        </td>
+                                        <td>@request.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            <a asp-controller="Requests" asp-action="Details" asp-route-id="@request.Id" class="btn btn-sm btn-outline-primary">View</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No one has requested your properties yet.
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Messages Tab -->
+        <div class="tab-pane fade" id="messages" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>Messages</h4>
+                <a asp-controller="Messages" asp-action="Create" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle"></i> New Message
+                </a>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="mb-3">
+                        <i class="bi bi-inbox"></i> Received (@(receivedMessages?.Count ?? 0))
+                        <a asp-controller="Messages" asp-action="Received" class="btn btn-sm btn-link">View All</a>
+                    </h5>
+                    @if (receivedMessages != null && receivedMessages.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var message in receivedMessages)
+                            {
+                                <a asp-controller="Messages" asp-action="Details" asp-route-id="@message.Id" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@message.Subject</h6>
+                                        <small>@message.SentAt.ToString("MMM dd")</small>
+                                    </div>
+                                    <p class="mb-1 small text-muted">From: @message.FromUser?.FirstName @message.FromUser?.LastName</p>
+                                    <small class="text-muted">@(message.Body.Length > 60 ? message.Body.Substring(0, 60) + "..." : message.Body)</small>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-light">No received messages.</div>
+                    }
+                </div>
+
+                <div class="col-md-6">
+                    <h5 class="mb-3">
+                        <i class="bi bi-send"></i> Sent (@(sentMessages?.Count ?? 0))
+                        <a asp-controller="Messages" asp-action="Sent" class="btn btn-sm btn-link">View All</a>
+                    </h5>
+                    @if (sentMessages != null && sentMessages.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var message in sentMessages)
+                            {
+                                <a asp-controller="Messages" asp-action="Details" asp-route-id="@message.Id" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@message.Subject</h6>
+                                        <small>@message.SentAt.ToString("MMM dd")</small>
+                                    </div>
+                                    <p class="mb-1 small text-muted">To: @message.ToUser?.FirstName @message.ToUser?.LastName</p>
+                                    <small class="text-muted">@(message.Body.Length > 60 ? message.Body.Substring(0, 60) + "..." : message.Body)</small>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-light">No sent messages.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

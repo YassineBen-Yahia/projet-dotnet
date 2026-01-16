@@ -1,0 +1,72 @@
+﻿@model WebApplication4.ViewModels.RequestCreateViewModel
+@{
+    ViewData["Title"] = "Create Request";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">
+                        <i class="bi bi-clipboard-check"></i> Request Property Visit
+                    </h2>
+                    
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="PropertyId" class="form-label">Select Property</label>
+                            @if (Model.PropertyId != Guid.Empty)
+                            {
+                                <input type="hidden" asp-for="PropertyId" />
+                                <div class="alert alert-info">
+                                    <i class="bi bi-house-door"></i> Selected Property: <strong>@Model.PropertyTitle</strong>
+                                </div>
+                            }
+                            else
+                            {
+                                <select asp-for="PropertyId" class="form-select">
+                                    <option value="">-- Select a property --</option>
+                                    @foreach (var property in ViewBag.Properties as IEnumerable<dynamic>)
+                                    {
+                                        <option value="@property.Id">@property.Title</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="PropertyId" class="text-danger"></span>
+                            }
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label">Request Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="6" placeholder="Please provide details about your request (e.g., preferred visit date/time, questions about the property, etc.)"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i> Include any specific questions or preferred visit times.
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Note:</strong> Your request will be sent to the property owner. They will review it and contact you accordingly.
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Submit Request
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

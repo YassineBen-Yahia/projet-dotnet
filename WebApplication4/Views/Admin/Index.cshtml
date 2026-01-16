@@ -1,0 +1,262 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    var stats = ViewBag.Stats;
+    var recentProperties = ViewBag.RecentProperties as IEnumerable<WebApplication4.Models.Property>;
+    var recentRequests = ViewBag.RecentRequests as IEnumerable<WebApplication4.Models.Request>;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+        <div class="btn-group" role="group">
+            <a asp-action="Users" class="btn btn-outline-primary">
+                <i class="bi bi-people"></i> Manage Users
+            </a>
+            <a asp-action="Statistics" class="btn btn-outline-info">
+                <i class="bi bi-graph-up"></i> Statistics
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people" style="font-size: 2.5rem;"></i>
+                    <h2 class="mt-2 mb-0">@stats.TotalUsers</h2>
+                    <p class="mb-0">Total Users</p>
+                </div>
+                <div class="card-footer bg-primary bg-opacity-75">
+                    <a asp-action="Users" class="text-white text-decoration-none small">
+                        View all users <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-house-door" style="font-size: 2.5rem;"></i>
+                    <h2 class="mt-2 mb-0">@stats.TotalProperties</h2>
+                    <p class="mb-0">Total Properties</p>
+                    <small>@stats.AvailableProperties Available</small>
+                </div>
+                <div class="card-footer bg-success bg-opacity-75">
+                    <a asp-action="Properties" class="text-white text-decoration-none small">
+                        View all properties <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-clipboard-check" style="font-size: 2.5rem;"></i>
+                    <h2 class="mt-2 mb-0">@stats.TotalRequests</h2>
+                    <p class="mb-0">Total Requests</p>
+                    <small>@stats.PendingRequests Pending</small>
+                </div>
+                <div class="card-footer bg-warning bg-opacity-75">
+                    <a asp-action="Requests" class="text-white text-decoration-none small">
+                        View all requests <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-envelope" style="font-size: 2.5rem;"></i>
+                    <h2 class="mt-2 mb-0">@stats.TotalMessages</h2>
+                    <p class="mb-0">Total Messages</p>
+                </div>
+                <div class="card-footer bg-info bg-opacity-75">
+                    <a asp-action="Messages" class="text-white text-decoration-none small">
+                        View all messages <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Status Overview -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-house-door"></i> Recent Properties</h5>
+                </div>
+                <div class="card-body">
+                    @if (recentProperties != null && recentProperties.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Property</th>
+                                        <th>Owner</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var property in recentProperties)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <strong>@property.Title</strong><br />
+                                                <small class="text-muted">@property.Address</small>
+                                            </td>
+                                            <td>
+                                                @property.Owner?.FirstName @property.Owner?.LastName
+                                            </td>
+                                            <td>
+                                                <strong class="text-primary">@property.Price.ToString("C")</strong>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">@property.Status</span>
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Properties" asp-action="Details" asp-route-id="@property.Id" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No properties yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Property Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Available</span>
+                            <strong class="text-success">@stats.AvailableProperties</strong>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: @(stats.TotalProperties > 0 ? (stats.AvailableProperties * 100.0 / stats.TotalProperties) : 0)%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Sold</span>
+                            <strong class="text-danger">@stats.SoldProperties</strong>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: @(stats.TotalProperties > 0 ? (stats.SoldProperties * 100.0 / stats.TotalProperties) : 0)%"></div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="text-center">
+                        <a asp-action="Statistics" class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-graph-up"></i> View Detailed Statistics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Requests -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Recent Requests</h5>
+        </div>
+        <div class="card-body">
+            @if (recentRequests != null && recentRequests.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Requester</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var request in recentRequests)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@request.Property?.Title</strong><br />
+                                        <small class="text-muted">@request.Property?.Price.ToString("C")</small>
+                                    </td>
+                                    <td>
+                                        @request.User?.FirstName @request.User?.LastName<br />
+                                        <small class="text-muted">@request.User?.Email</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-@(request.Status == "Approved" ? "success" : request.Status == "Rejected" ? "danger" : "warning")">
+                                            @request.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small>@request.CreatedAt.ToString("MMM dd, yyyy")</small>
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Requests" asp-action="Details" asp-route-id="@request.Id" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No requests yet.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <a asp-action="Users" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-people"></i> Manage Users
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a asp-action="Properties" class="btn btn-outline-success w-100">
+                        <i class="bi bi-house-door"></i> Manage Properties
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a asp-action="Requests" class="btn btn-outline-warning w-100">
+                        <i class="bi bi-clipboard-check"></i> Manage Requests
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a asp-action="Messages" class="btn btn-outline-info w-100">
+                        <i class="bi bi-envelope"></i> View Messages
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
