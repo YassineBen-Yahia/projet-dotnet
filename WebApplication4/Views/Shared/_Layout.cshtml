@@ -10,93 +10,114 @@
     <link rel="stylesheet" href="~/WebApplication4.styles.css" asp-append-version="true"/>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                <i class="bi bi-house-heart"></i> RealEstate
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-house-heart"></i> Landmark
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-                            <i class="bi bi-house"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Properties" asp-action="Index">
-                            <i class="bi bi-buildings"></i> Properties
-                        </a>
-                    </li>
-                    @if (User?.Identity?.IsAuthenticated == true)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Requests" asp-action="Index">
-                                <i class="bi bi-clipboard-check"></i> Requests
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Messages" asp-action="Index">
-                                <i class="bi bi-envelope"></i> Messages
-                            </a>
-                        </li>
-                    }
-                </ul>
-                <ul class="navbar-nav">
-                    @if (User?.Identity?.IsAuthenticated == true)
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i> @User.Identity.Name
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Index">
+            
+            <nav class="nav-desktop">
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Properties" asp-action="Index" 
+                       class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Properties" ? "active" : "")">
+                        <i class="bi bi-house-door"></i> Properties
+                    </a>
+                    <a asp-controller="Requests" asp-action="Index" 
+                       class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Requests" ? "active" : "")">
+                        <i class="bi bi-clipboard-check"></i> Requests
+                    </a>
+                    <a asp-controller="Messages" asp-action="Index" 
+                       class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Messages" ? "active" : "")">
+                        <i class="bi bi-envelope"></i> Messages
+                    </a>
+                }
+                else
+                {
+                    <a href="#about" class="nav-link" data-section="about">
+                        <i class="bi bi-info-circle"></i> About Us
+                    </a>
+                    <a href="#properties" class="nav-link" data-section="properties">
+                        <i class="bi bi-buildings"></i> Properties
+                    </a>
+                    <a href="#why-choose" class="nav-link" data-section="why-choose">
+                        <i class="bi bi-star"></i> Why Choose Us?
+                    </a>
+                    <a href="#contact" class="nav-link" data-section="contact">
+                        <i class="bi bi-envelope-at"></i> Contact Us
+                    </a>
+                }
+            </nav>
+
+            <div class="header-auth">
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <div class="user-dropdown">
+                        <button class="user-dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> @User.Identity.Name
+                            <i class="bi bi-chevron-down ms-1"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Account" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" 
+                                   asp-controller="Account" asp-action="Index">
                                     <i class="bi bi-person"></i> My Profile
-                                </a></li>
-                                <li><a class="dropdown-item" asp-controller="Properties" asp-action="Index">
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Properties" ? "active" : "")" 
+                                   asp-controller="Properties" asp-action="Index">
                                     <i class="bi bi-house-door"></i> My Properties
-                                </a></li>
-                                <li><a class="dropdown-item" asp-controller="Requests" asp-action="Index">
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Requests" ? "active" : "")" 
+                                   asp-controller="Requests" asp-action="Index">
                                     <i class="bi bi-clipboard"></i> My Requests
-                                </a></li>
-                                <li><a class="dropdown-item" asp-controller="Messages" asp-action="Index">
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Messages" ? "active" : "")" 
+                                   asp-controller="Messages" asp-action="Index">
                                     <i class="bi bi-envelope"></i> My Messages
-                                </a></li>
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">
-                                        <i class="bi bi-speedometer2"></i> Admin Dashboard
-                                    </a></li>
-                                }
+                                </a>
+                            </li>
+                            @if (User.IsInRole("Admin"))
+                            {
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form asp-controller="Account" asp-action="Logout" method="post" class="px-3 py-1">
-                                        <button type="submit" class="btn btn-link dropdown-item p-0">
-                                            <i class="bi bi-box-arrow-right"></i> Logout
-                                        </button>
-                                    </form>
+                                    <a class="dropdown-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "active" : "")" 
+                                       asp-controller="Admin" asp-action="Index">
+                                        <i class="bi bi-speedometer2"></i> Admin Dashboard
+                                    </a>
                                 </li>
-                            </ul>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="nav-item"><a class="nav-link text-dark" asp-controller="Account" asp-action="Login">
-                            <i class="bi bi-box-arrow-in-right"></i> Login
-                        </a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-controller="Account" asp-action="Register">
-                            <i class="bi bi-person-plus"></i> Register
-                        </a></li>
-                    }
-                </ul>
+                            }
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="px-3 py-1">
+                                    <button type="submit" class="btn btn-link dropdown-item p-0 text-start">
+                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Account" && ViewContext.RouteData.Values["Action"]?.ToString() == "Login" ? "active" : "")" 
+                       asp-controller="Account" asp-action="Login">
+                        <i class="bi bi-box-arrow-in-right"></i> Login
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Account" && ViewContext.RouteData.Values["Action"]?.ToString() == "Register" ? "active" : "")" 
+                       asp-controller="Account" asp-action="Register">
+                        <i class="bi bi-person-plus"></i> Register
+                    </a>
+                }
             </div>
         </div>
-    </nav>
+    </div>
 </header>
 <div class="container">
     <main role="main" class="pb-3">
@@ -117,12 +138,13 @@
         @RenderBody()
     </main>
 </div>
-
-<footer class="border-top footer text-muted">
+<!--<footer class="border-top footer text-muted">
     <div class="container">
         &copy; 2026 - Real Estate Platform - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
     </div>
 </footer>
+-->
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
