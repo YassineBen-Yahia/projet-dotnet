@@ -56,18 +56,26 @@ html {
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--white);
+    background-color: var(--bg-light);
     color: var(--text-dark);
     line-height: 1.6;
-    margin-bottom: 60px;
+    margin: 0;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 90vh;
 }
 
 /* ===========================
    Typography
    =========================== */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 600;
     line-height: 1.2;
 }
@@ -171,11 +179,358 @@ a:hover {
     }
 }
 
-.main-content {
-    min-height: 100vh;
+/* Main Content Wrapper - Fix sticky footer */
+
+/* The wrapper div.container between header and footer */
+body>.container {
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    min-height: 0;
+    /* allow shrinking if needed */
 }
+
+/* The main element inside the wrapper */
+main[role="main"] {
+    flex: 1 1 auto;
+    min-height: 90vh;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+    background-color: var(--white);
+}
+
+@media (min-width: 1400px) {
+    main[role="main"] {
+        max-width: 1400px;
+    }
+}
+
+.card-property {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.card-property:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.property-price {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.property-features {
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem 0;
+    background-color: var(--bg-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.property-feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+}
+
+.property-feature i {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+    color: var(--primary);
+}
+
+/* ===========================
+   Request Page Tab Navigation
+   =========================== */
+.request-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid #e5e0db;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.request-tabs .request-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6b6159;
+    text-decoration: none !important;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: color 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+    white-space: nowrap;
+}
+
+.request-tabs .request-tab i {
+    font-size: 1rem;
+    transition: color 0.25s ease;
+}
+
+.request-tabs .request-tab:hover {
+    color: #d47052;
+    background-color: rgba(212, 112, 74, 0.04);
+    text-decoration: none !important;
+}
+
+.request-tabs .request-tab.active,
+.request-tabs .request-tab[aria-selected="true"] {
+    color: #d47052;
+    font-weight: 600;
+    border-bottom-color: #d47052;
+    background-color: rgba(212, 112, 74, 0.06);
+}
+
+.request-tabs .request-tab.active i,
+.request-tabs .request-tab[aria-selected="true"] i {
+    color: #d47052;
+}
+
+@media (max-width: 575px) {
+    .request-tabs .request-tab {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.82rem;
+        gap: 0.35rem;
+    }
+
+    .request-tabs .request-tab i {
+        font-size: 0.9rem;
+    }
+}
+
+/* ===========================
+   Generic Tab Navigation (reusable)
+   =========================== */
+.tab-nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid #e5e0db;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.tab-nav .tab-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6b6159;
+    text-decoration: none !important;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: color 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+    white-space: nowrap;
+}
+
+.tab-nav .tab-link:hover {
+    color: #d47052;
+    background-color: rgba(212, 112, 74, 0.04);
+}
+
+.tab-nav .tab-link.active,
+.tab-nav .tab-link[aria-selected="true"] {
+    color: #d47052;
+    font-weight: 600;
+    border-bottom-color: #d47052;
+    background-color: rgba(212, 112, 74, 0.06);
+}
+
+.tab-nav .tab-link.active i,
+.tab-nav .tab-link[aria-selected="true"] i {
+    color: #d47052;
+}
+
+/* Legacy segmented tabs */
+.tab-segmented {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid #e5e0db;
+    margin-bottom: 1.5rem;
+    position: relative;
+    background: transparent;
+    padding: 0;
+    width: auto;
+    border-radius: 0;
+}
+
+.tab-segmented .tab-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6b6159;
+    text-decoration: none !important;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: color 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+    white-space: nowrap;
+    border-radius: 0;
+    box-shadow: none;
+    flex: 0 1 auto;
+}
+
+.tab-segmented .tab-item:hover:not(.active) {
+    color: #d47052;
+    background-color: rgba(212, 112, 74, 0.04);
+}
+
+.tab-segmented .tab-item.active {
+    color: #d47052;
+    font-weight: 600;
+    border-bottom-color: #d47052;
+    background-color: rgba(212, 112, 74, 0.06);
+    box-shadow: none;
+}
+
+/* ===========================
+   Modern Table
+   =========================== */
+.table-modern {
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+    width: 100%;
+}
+
+.table-modern thead th {
+    border: none;
+    color: var(--text-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    padding: 0.75rem 1rem;
+    background: transparent;
+}
+
+.table-modern tbody tr {
+    background-color: var(--white);
+    border: 1px solid var(--border);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-modern tbody tr:hover {
+    background-color: var(--bg-light);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.table-modern td {
+    padding: 1rem;
+    vertical-align: middle;
+    border: none;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.table-modern td:first-child {
+    border-left: 1px solid var(--border);
+    border-top-left-radius: var(--radius);
+    border-bottom-left-radius: var(--radius);
+}
+
+.table-modern td:last-child {
+    border-right: 1px solid var(--border);
+    border-top-right-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+}
+
+/* ===========================
+   Status Badges
+   =========================== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+}
+
+.status-approved {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: #157347;
+}
+
+.status-pending {
+    background-color: rgba(212, 112, 74, 0.1);
+    color: var(--primary);
+}
+
+.status-rejected {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #b02a37;
+}
+
+/* ===========================
+   Actions Group
+   =========================== */
+.actions-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.actions-group .btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.actions-group .btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Property icon cell */
+.property-icon-cell {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    background-color: rgba(212, 112, 74, 0.08);
+    flex-shrink: 0;
+}
+
 
 /* ===========================
    Buttons
@@ -285,6 +640,7 @@ a:hover {
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border);
     padding: 0.5rem 0;
+    flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
@@ -1543,6 +1899,7 @@ a:hover {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -1572,6 +1929,7 @@ a:hover {
         transform: translateY(20px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -1959,9 +2317,11 @@ a:hover {
         transform: scale(0.8);
         opacity: 0;
     }
+
     50% {
         transform: scale(1.1);
     }
+
     100% {
         transform: scale(1);
         opacity: 1;
@@ -2059,6 +2419,7 @@ a:hover {
 
 /* Print Styles */
 @media print {
+
     .header,
     .footer,
     .cta-section,
@@ -2144,12 +2505,13 @@ a:hover {
 .dropdown-item {
     transition: all 0.3s ease;
 }
+
 /* ===========================
    Modern User Dropdown
    =========================== */
 .modern-dropdown {
     border-radius: var(--radius-lg);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
     min-width: 240px;
     padding: 0.5rem;
 }
@@ -2190,6 +2552,8 @@ a:hover {
     font-family: inherit;
     position: relative;
     z-index: 10;
+    flex-shrink: 0;
+    margin-top: auto;
 }
 
 .footer-logo {

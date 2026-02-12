@@ -1,0 +1,94 @@
+@model IEnumerable<WebApplication4.Models.Request>
+@{
+    ViewData["Title"] = "Requests for My Properties";
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="section-title mb-1" style="text-align: left;">@ViewData["Title"]</h2>
+        <p class="text-muted small mb-0">Review requests received for your listed properties</p>
+    </div>
+</div>
+
+<!-- Tab Navigation -->
+<nav class="request-tabs" role="tablist" aria-label="Request navigation">
+    <a class="request-tab" role="tab" aria-selected="false" asp-action="Index">
+        <i class="bi bi-send"></i>
+        <span>My Requests</span>
+    </a>
+    <a class="request-tab active" role="tab" aria-selected="true" asp-action="MyPropertyRequests">
+        <i class="bi bi-house-check"></i>
+        <span>Requests for My Properties</span>
+    </a>
+</nav>
+
+<!-- Content -->
+@if (!Model.Any())
+{
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="bi bi-inbox text-muted" style="font-size: 3rem; opacity: 0.4;"></i>
+        </div>
+        <h5 class="text-muted fw-normal">No requests received yet</h5>
+        <p class="text-muted small">Requests for your properties will appear here.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-modern align-middle">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Requested By</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="property-icon-cell me-3">
+                                    <i class="bi bi-house text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark">@r.Property?.Title</div>
+                                    <div class="text-primary small fw-semibold">@r.Property?.Price.ToString("C0")</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="fw-semibold text-dark">@r.User?.FirstName @r.User?.LastName</div>
+                            <div class="text-muted small">@r.User?.Email</div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-@(r.Status.ToLower())">
+                                @r.Status
+                            </span>
+                        </td>
+                        <td>
+                            <span class="text-muted small">
+                                <i class="bi bi-calendar3 me-1"></i>@r.CreatedAt.ToString("MMM dd, yyyy")
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <div class="actions-group justify-content-end">
+                                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-outline-primary" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-controller="Messages" asp-action="Create" asp-route-toUser="@r.User?.Email" class="btn btn-outline-success" title="Contact User">
+                                    <i class="bi bi-envelope"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

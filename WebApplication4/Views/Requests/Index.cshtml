@@ -4,38 +4,56 @@
     ViewData["Title"] = isAdmin ? "Requests Management" : "My Requests";
 }
 
+<!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>@ViewData["Title"]</h2>
+    <div>
+        <h2 class="section-title mb-1" style="text-align: left;">@ViewData["Title"]</h2>
+        <p class="text-muted small mb-0">@(isAdmin ? "Review and manage all property requests" : "Track and manage your property requests")</p>
+    </div>
     @if (!isAdmin)
     {
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> New Request
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> New Request
         </a>
     }
 </div>
 
+<!-- Tab Navigation -->
 @if (!isAdmin)
 {
-    <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link active" asp-action="Index">My Requests</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" asp-action="MyPropertyRequests">Requests for My Properties</a>
-        </li>
-    </ul>
+    <nav class="request-tabs" role="tablist" aria-label="Request navigation">
+        <a class="request-tab active" role="tab" aria-selected="true" asp-action="Index">
+            <i class="bi bi-send"></i>
+            <span>My Requests</span>
+        </a>
+        <a class="request-tab" role="tab" aria-selected="false" asp-action="MyPropertyRequests">
+            <i class="bi bi-house-check"></i>
+            <span>Requests for My Properties</span>
+        </a>
+    </nav>
 }
 
+<!-- Content -->
 @if (!Model.Any())
 {
-    <div class="alert alert-info text-center">
-        No requests found.
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="bi bi-inbox text-muted" style="font-size: 3rem; opacity: 0.4;"></i>
+        </div>
+        <h5 class="text-muted fw-normal">No requests found</h5>
+        <p class="text-muted small">Your requests will appear here once created.</p>
+        @if (!isAdmin)
+        {
+            <a asp-action="Create" class="btn btn-outline-primary btn-sm mt-2">
+                <i class="bi bi-plus-circle me-1"></i> Create a Request
+            </a>
+        }
     </div>
 }
 else
 {
     <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
+        <table class="table table-modern align-middle">
             <thead>
                 <tr>
                     <th>Property</th>
@@ -45,7 +63,7 @@ else
                     }
                     <th>Status</th>
                     <th>Date</th>
-                    <th>Actions</th>
+                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,41 +71,52 @@ else
                 {
                     <tr>
                         <td>
-                            <div class="fw-bold">@r.Property?.Title</div>
-                            <div class="text-muted small">@r.Property?.Price.ToString("C")</div>
+                            <div class="d-flex align-items-center">
+                                <div class="property-icon-cell me-3">
+                                    <i class="bi bi-house text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark">@r.Property?.Title</div>
+                                    <div class="text-primary small fw-semibold">@r.Property?.Price.ToString("C0")</div>
+                                </div>
+                            </div>
                         </td>
                         @if (isAdmin)
                         {
                             <td>
-                                <div>@r.User?.FirstName @r.User?.LastName</div>
+                                <div class="fw-semibold text-dark">@r.User?.FirstName @r.User?.LastName</div>
                                 <div class="text-muted small">@r.User?.Email</div>
                             </td>
                         }
                         <td>
-                            <span class="badge bg-@(r.Status == "Approved" ? "success" : r.Status == "Rejected" ? "danger" : "warning")">
+                            <span class="status-badge status-@(r.Status.ToLower())">
                                 @r.Status
                             </span>
                         </td>
-                        <td>@r.CreatedAt.ToString("g")</td>
                         <td>
-                            <div class="btn-group btn-group-sm">
-                                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-outline-info" title="View">
+                            <span class="text-muted small">
+                                <i class="bi bi-calendar3 me-1"></i>@r.CreatedAt.ToString("MMM dd, yyyy")
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <div class="actions-group justify-content-end">
+                                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-outline-primary" title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                
+
                                 @if (isAdmin && r.Status == "Pending")
                                 {
                                     <form asp-action="UpdateStatus" asp-route-id="@r.Id" method="post" class="d-inline" onsubmit="return confirm('Approve this request?');">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="status" value="Approved" />
-                                        <button type="submit" class="btn btn-outline-success">
+                                        <button type="submit" class="btn btn-outline-success" title="Approve">
                                             <i class="bi bi-check-lg"></i>
                                         </button>
                                     </form>
                                     <form asp-action="UpdateStatus" asp-route-id="@r.Id" method="post" class="d-inline" onsubmit="return confirm('Reject this request?');">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="status" value="Rejected" />
-                                        <button type="submit" class="btn btn-outline-danger">
+                                        <button type="submit" class="btn btn-outline-warning" title="Reject">
                                             <i class="bi bi-x-lg"></i>
                                         </button>
                                     </form>
@@ -97,7 +126,7 @@ else
                                 {
                                     <form asp-action="Delete" asp-route-id="@r.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this request?');">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-outline-danger">
+                                        <button type="submit" class="btn btn-outline-danger" title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>

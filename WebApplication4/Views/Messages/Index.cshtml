@@ -4,38 +4,54 @@
     ViewData["Title"] = isAdmin ? "Messages Monitoring" : "My Messages";
 }
 
+<!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-envelope"></i> @ViewData["Title"]</h2>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> New Message
+    <div>
+        <h2 class="section-title mb-1" style="text-align: left;">@ViewData["Title"]</h2>
+        <p class="text-muted small mb-0">@(isAdmin ? "Monitor all platform communications" : "View and manage your conversations")</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary shadow-sm">
+        <i class="bi bi-plus-circle me-1"></i> New Message
     </a>
 </div>
 
+<!-- Tab Navigation -->
 @if (!isAdmin)
 {
-    <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link active" asp-action="Index">All Messages</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" asp-action="Received">Received</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" asp-action="Sent">Sent</a>
-        </li>
-    </ul>
+    <nav class="request-tabs" role="tablist" aria-label="Message navigation">
+        <a class="request-tab active" role="tab" aria-selected="true" asp-action="Index">
+            <i class="bi bi-inbox-fill"></i>
+            <span>All Messages</span>
+        </a>
+        <a class="request-tab" role="tab" aria-selected="false" asp-action="Received">
+            <i class="bi bi-arrow-down-circle"></i>
+            <span>Received</span>
+        </a>
+        <a class="request-tab" role="tab" aria-selected="false" asp-action="Sent">
+            <i class="bi bi-arrow-up-circle"></i>
+            <span>Sent</span>
+        </a>
+    </nav>
 }
 
+<!-- Content -->
 @if (!Model.Any())
 {
-    <div class="alert alert-info text-center">
-        No messages found.
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="bi bi-chat-square-text text-muted" style="font-size: 3rem; opacity: 0.4;"></i>
+        </div>
+        <h5 class="text-muted fw-normal">No messages found</h5>
+        <p class="text-muted small">Your messages will appear here.</p>
+        <a asp-action="Create" class="btn btn-outline-primary btn-sm mt-2">
+            <i class="bi bi-plus-circle me-1"></i> Compose Message
+        </a>
     </div>
 }
 else
 {
     <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
+        <table class="table table-modern align-middle">
             <thead>
                 <tr>
                     @if (isAdmin)
@@ -46,11 +62,10 @@ else
                     else
                     {
                         <th>User</th>
-                        <th>Type</th>
                     }
                     <th>Subject</th>
                     <th>Date</th>
-                    <th>Actions</th>
+                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,36 +77,71 @@ else
                     <tr>
                         @if (isAdmin)
                         {
-                            <td>@m.FromUser?.FirstName @m.FromUser?.LastName</td>
-                            <td>@m.ToUser?.FirstName @m.ToUser?.LastName</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="property-icon-cell me-3" style="background-color: rgba(51, 120, 180, 0.1); color: var(--secondary);">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">@m.FromUser?.FirstName @m.FromUser?.LastName</div>
+                                        <div class="text-muted small">@m.FromUser?.Email</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="property-icon-cell me-3" style="background-color: rgba(51, 120, 180, 0.1); color: var(--secondary);">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">@m.ToUser?.FirstName @m.ToUser?.LastName</div>
+                                        <div class="text-muted small">@m.ToUser?.Email</div>
+                                    </div>
+                                </div>
+                            </td>
                         }
                         else
                         {
                             <td>
-                                @(isReceived ? m.FromUser?.FirstName + " " + m.FromUser?.LastName : m.ToUser?.FirstName + " " + m.ToUser?.LastName)
-                            </td>
-                            <td>
-                                <span class="badge bg-@(isReceived ? "success" : "primary")">
-                                    @(isReceived ? "Received" : "Sent")
-                                </span>
+                                <div class="d-flex align-items-center">
+                                    <div class="property-icon-cell me-3" style="background-color: @(isReceived ? "rgba(25, 135, 84, 0.1)" : "rgba(51, 120, 180, 0.1)"); color: @(isReceived ? "#198754" : "var(--secondary)");">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">
+                                            @(isReceived ? m.FromUser?.FirstName + " " + m.FromUser?.LastName : m.ToUser?.FirstName + " " + m.ToUser?.LastName)
+                                        </div>
+                                        <div class="small">
+                                            <span class="status-badge" style="background-color: @(isReceived ? "rgba(25, 135, 84, 0.1)" : "rgba(51, 120, 180, 0.1)"); color: @(isReceived ? "#198754" : "var(--secondary)"); padding: 2px 8px; font-size: 0.7rem;">
+                                                @(isReceived ? "Received" : "Sent")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         }
-                        <td class="text-truncate" style="max-width: 200px;">@m.Subject</td>
-                        <td>@m.SentAt.ToString("g")</td>
                         <td>
-                            <div class="btn-group btn-group-sm">
-                                <a asp-action="Details" asp-route-id="@m.Id" class="btn btn-outline-info">
+                            <div class="fw-semibold text-dark text-truncate" style="max-width: 250px;">@m.Subject</div>
+                        </td>
+                        <td>
+                            <span class="text-muted small">
+                                <i class="bi bi-calendar3 me-1"></i>@m.SentAt.ToString("MMM dd, HH:mm")
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <div class="actions-group justify-content-end">
+                                <a asp-action="Details" asp-route-id="@m.Id" class="btn btn-outline-primary" title="Read">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 @if (!isAdmin && isReceived)
                                 {
-                                    <a asp-action="Reply" asp-route-id="@m.Id" class="btn btn-outline-success">
+                                    <a asp-action="Reply" asp-route-id="@m.Id" class="btn btn-outline-success" title="Reply">
                                         <i class="bi bi-reply"></i>
                                     </a>
                                 }
                                 <form asp-action="Delete" asp-route-id="@m.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this message?');">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-outline-danger">
+                                    <button type="submit" class="btn btn-outline-danger" title="Delete">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>

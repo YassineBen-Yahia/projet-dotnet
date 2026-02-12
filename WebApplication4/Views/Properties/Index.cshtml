@@ -4,8 +4,11 @@
     var isAdmin = User.IsInRole("Admin");
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Properties</h2>
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+        <h2 class="section-title mb-1" style="text-align: left;">Properties</h2>
+        <p class="text-muted small">Discover the best real estate opportunities</p>
+    </div>
     @if (User?.Identity?.IsAuthenticated == true && (isAdmin || User.IsInRole("Agent")))
     {
         <a class="btn btn-primary" asp-action="Create">
@@ -14,68 +17,81 @@
     }
 </div>
 
-<div class="row">
+<div class="row g-4">
     @foreach (var p in Model)
     {
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                @if (p.Images != null && p.Images.Any())
-                {
-                    <img src="@p.Images.First().Url" class="card-img-top" alt="@p.Title" style="height: 250px; object-fit: cover;" />
-                }
-                else
-                {
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 250px;">
-                        <div class="text-center">
-                            <i class="bi bi-house-door" style="font-size: 3rem;"></i>
-                            <p class="mb-0">No Image</p>
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-property h-100 shadow-sm">
+                <div class="position-relative">
+                    @if (p.Images != null && p.Images.Any())
+                    {
+                        <img src="@p.Images.First().Url" class="card-img-top" alt="@p.Title" style="height: 250px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center text-muted" style="height: 250px;">
+                            <div class="text-center">
+                                <i class="bi bi-house-door" style="font-size: 3rem; opacity: 0.5;"></i>
+                                <p class="mb-0 mt-2 small">No Image</p>
+                            </div>
                         </div>
+                    }
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-white text-dark shadow-sm">@p.Status</span>
                     </div>
-                }
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title text-truncate">@p.Title</h5>
-                    <p class="text-muted mb-2 small">
-                        <i class="bi bi-geo-alt"></i> @(p.Address ?? "Location not specified")
+                </div>
+                
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title text-truncate fw-bold mb-0 flex-grow-1 me-2" title="@p.Title">@p.Title</h5>
+                        <div class="property-price">@p.Price.ToString("C0")</div>
+                    </div>
+                    
+                    <p class="text-muted mb-3 small d-flex align-items-center">
+                        <i class="bi bi-geo-alt me-1 text-primary"></i> @(p.Address ?? "Location not specified")
                     </p>
+                    
                     @if (!string.IsNullOrEmpty(p.Description))
                     {
-                        <p class="card-text text-secondary small">
-                            @(p.Description.Length > 80 ? p.Description.Substring(0, 80) + "..." : p.Description)
+                        <p class="card-text text-muted small mb-4 flex-grow-1">
+                            @(p.Description.Length > 90 ? p.Description.Substring(0, 90) + "..." : p.Description)
                         </p>
                     }
-                    <div class="mt-auto">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-info">@p.Status</span>
-                            <span class="fw-bold text-primary fs-5">@p.Price.ToString("C")</span>
+                    
+                    <div class="property-features rounded mb-4">
+                        <div class="property-feature">
+                            <i class="bi bi-door-closed"></i>
+                            <span>@p.Bedrooms Beds</span>
                         </div>
-                        <div class="row text-center mb-3 small text-muted">
-                            <div class="col-4">
-                                <i class="bi bi-door-closed"></i> @p.Bedrooms BD
-                            </div>
-                            <div class="col-4">
-                                <i class="bi bi-droplet"></i> @p.Bathrooms BA
-                            </div>
-                            <div class="col-4">
-                                <i class="bi bi-rulers"></i> @p.Area m²
-                            </div>
+                        <div class="property-feature">
+                            <i class="bi bi-droplet"></i>
+                            <span>@p.Bathrooms Baths</span>
                         </div>
-                        <div class="d-grid gap-2">
-                            <a class="btn btn-primary btn-sm shadow-sm" asp-action="Details" asp-route-id="@p.Id">
-                                <i class="bi bi-eye"></i> View Details
-                            </a>
-                            
+                        <div class="property-feature">
+                            <i class="bi bi-rulers"></i>
+                            <span>@p.Area m²</span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-primary shadow-sm" asp-action="Details" asp-route-id="@p.Id">
+                            View Details
+                        </a>
+                        
+                        @if (isAdmin || (User?.Identity?.IsAuthenticated == true && p.OwnerId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value))
+                        {
                             <div class="d-flex gap-2">
-                                <a class="btn btn-warning btn-sm flex-grow-1 shadow-sm" asp-action="Edit" asp-route-id="@p.Id">
-                                    <i class="bi bi-pencil"></i> Edit
+                                <a class="btn btn-outline-warning flex-grow-1 btn-sm" asp-action="Edit" asp-route-id="@p.Id">
+                                    <i class="bi bi-pencil"></i>
                                 </a>
                                 <form asp-action="Delete" asp-route-id="@p.Id" method="post" class="flex-grow-1" onsubmit="return confirm('Delete this property?');">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-danger btn-sm w-100 shadow-sm">
-                                        <i class="bi bi-trash"></i> Delete
+                                    <button type="submit" class="btn btn-outline-danger w-100 btn-sm">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -92,4 +108,35 @@
             <a asp-action="Create" class="alert-link">Create the first property</a>
         }
     </div>
+}
+@if (ViewBag.TotalPages > 1)
+{
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link border-0 text-dark shadow-sm mx-1 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            }
+            
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link border-0 shadow-sm mx-1 rounded-circle d-flex align-items-center justify-content-center @(i == ViewBag.CurrentPage ? "bg-primary text-white" : "text-dark")" style="width: 40px; height: 40px;" href="@Url.Action("Index", new { page = i })">@i</a>
+                </li>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link border-0 text-dark shadow-sm mx-1 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
 }

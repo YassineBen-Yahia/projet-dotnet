@@ -22,13 +22,20 @@ public class PropertiesController : Controller
         _userManager = userManager;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
-        var list = await _db.Properties
+        int pageSize = 6;
+        var query = _db.Properties
             .Include(p => p.Images)
             .Include(p => p.Owner)
-            .OrderByDescending(p => p.Id)
-            .ToListAsync();
+            .OrderByDescending(p => p.Id);
+
+        int totalItems = await query.CountAsync();
+        var list = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
         return View(list);
     }
 
