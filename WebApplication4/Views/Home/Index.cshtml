@@ -14,13 +14,24 @@
                 <h1 class="hero-title">Buyers & Sellers<br/>All in One Place</h1>
                 <p class="hero-description">Whether you're searching for your dream home or growing your real estate business, Landmark connects you with the right opportunities and professionals.</p>
                 <div class="hero-buttons">
-                    <button class="btn btn-primary btn-large" id="heroGetStartedBtn">
-                        Get Started Today
-                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </button>
-                    <button class="btn btn-outline btn-large">Learn More</button>
+                    @if (User?.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Properties" asp-action="Index" class="btn btn-primary btn-large">
+                            Get Started Today
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-large">
+                            Get Started Today
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </a>
+                    }
                 </div>
             </div>
             <div class="hero-image">
@@ -257,8 +268,8 @@
             <h2 class="cta-title">Ready to Get Started?</h2>
             <p class="cta-description">Join thousands of buyers and sellers who are transforming their real estate experience with Landmark.</p>
             <div class="cta-buttons">
-                <button class="btn btn-primary" id="ctaGetStartedBtn">Create Your Account</button>
-                <button class="btn btn-outline">Explore Properties</button>
+                <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Create Your Account</a>
+                <a asp-controller="Properties" asp-action="Index" class="btn btn-outline">Explore Properties</a>
             </div>
         </div>
     </div>
