@@ -1,30 +1,39 @@
-# .gitignore for .NET
-# ------------------
+# Visual Studio
+.vs/
+.vscode/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.xproj.user
 
-# Build results
+# Project files
 [Dd]ebug/
-[Dd]ebugPublic/
 [Rr]elease/
-[Rr]eleases/
 x64/
 x86/
-[Aa]rm/
-[Aa]rm64/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
 bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-[Ll]ogs/
 
-# Visual Studio files
-.vs/
-*.user
-*.userosscache
-*.sln.docstates
+# Tooling
+_ReSharper*/
+*.resharper
+*.dotCover
 
-# Rider / IntelliJ IDEA
+# Rider
 .idea/
-*.sln.DotSettings.user
+*.sln.iml
+
+# OS specific
+.DS_Store
+Thumbs.db
 
 # User-specific files
 *.rsuser
@@ -32,26 +41,19 @@ bld/
 *.user
 *.userosscache
 *.sln.docstates
-
-# Database / Local DB
-*.db
-*.sqlite
-*.sqlite3
-*.db-shm
-*.db-wal
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Myapp specific
-WebApplication4/app.db
-WebApplication4/bin/
-WebApplication4/obj/
-
-# Uploads - Don't track user-uploaded images
-WebApplication4/wwwroot/uploads/
-
-# Settings
-appsettings.Development.json
-appsettings.Local.json
+*.userprefs
+mono_crash.*
+[Dd]ebug
+[Dd]ebugPublic
+[Rr]elease
+[Rr]eleases
+x64
+x86
+[Ww][Ii][Nn]32
+[Aa][Rr][Mm]
+[Aa][Rr][Mm]64
+bld
+[Bb]in
+[Oo]bj
+[Ll]og
+[Ll]ogs
