@@ -1,93 +1,91 @@
 # Real Estate Platform - Complete Implementation
 
 ## Overview
-This is a complete real estate management platform built with ASP.NET Core 9.0, MySQL (Pomelo), and Identity Framework.
+This is a complete real estate management platform, "Landmark", built with ASP.NET Core 9.0, MySQL (Pomelo), and Identity Framework. The application serves buyers, sellers, and property owners with a comprehensive suite of tools for property listing, searching, and management.
 
 ## Features Implemented
 
-### 1. Authentication & Authorization
-- **AccountController** - Complete login/logout/register functionality
-- **Role-based access control**: Admin, Client, Agent
-- Identity configuration with relaxed password requirements for development
+### 1. Authentication & Authorization (AccountController)
+- **Complete Authentication**: Login, logout, and registration functionality.
+- **User Dashboard**: Personalized dashboard showing owned properties, requests, and messages.
+- **Profile Management**: Users can edit their profile (First Name, Last Name) and change their password.
+- **Account Deletion**: Users have the ability to permanently delete their account.
+- **Role-based Access Control**: Distinct roles for Admin, Client, and Agent.
+- **Identity Configuration**: Configured with relaxed password requirements for development ease.
 
 ### 2. Property Management (PropertiesController)
-- ✅ **List all properties** - Public view with images
-- ✅ **Property details** - Detailed view with images and owner info
-- ✅ **Create property** - Authenticated users can create properties with image upload
-- ✅ **Edit property** - Property owners and admins can edit
-- ✅ **Delete property** - Property owners and admins can delete
-- ✅ **Image upload** - Multiple images per property
-- ✅ **Delete images** - Remove individual property images
-- ✅ **Authorization checks** - Users can only edit/delete their own properties (or admin)
+- **Property Listing**: Public view of all available properties with images.
+- **Property Details**: Detailed view including description, specs, price, and owner information.
+- **Create Property**: Authenticated users can list new properties with image uploads.
+- **Edit Property**: Property owners and admins can update property details.
+- **Delete Property**: Property owners and admins can remove listings.
+- **Image Management**: Support for multiple images per property with individual deletion capabilities.
+- **Authorization**: Strict checks ensures users can only manage their own properties (unless Admin).
 
 ### 3. Request Management (RequestsController)
-- ✅ **Create request** - Clients can request property viewings/information
-- ✅ **View requests** - Users see their own requests, admins see all
-- ✅ **My property requests** - Property owners see requests for their properties
-- ✅ **Update request status** - Property owners can approve/reject requests
-- ✅ **Request details** - View full request information
-- ✅ **Delete request** - Request owners can delete
+- **Create Request**: Clients can submit inquiries or viewing requests for specific properties.
+- **View Requests**: Users track their sent requests; Admins view all system requests.
+- **Property Inquiries**: Owners can view and manage requests received for their properties.
+- **Request Status**: Owners can approve or reject requests.
+- **Request Details**: Comprehensive view of request information and status.
+- **Delete Request**: Request owners can cancel/remove their requests.
 
 ### 4. Messaging System (MessagesController)
-- ✅ **Send message** - Send messages to other users by email
-- ✅ **Inbox** - View all received messages
-- ✅ **Sent messages** - View sent messages
-- ✅ **Message details** - View message content
-- ✅ **Reply** - Reply to received messages
-- ✅ **Delete message** - Remove messages
+- **Internal Messaging**: Secure messaging system between users (e.g., Buyer to Agent).
+- **Inbox & Sent**: Separate views for received and sent messages.
+- **Reply Functionality**: Direct reply capability for ease of communication.
+- **Message Management**: Users can delete messages from their inbox.
 
 ### 5. Admin Dashboard (AdminController)
-- ✅ **Dashboard** - Statistics overview (users, properties, requests, messages)
-- ✅ **User management** - View all users, roles, and activities
-- ✅ **User details** - View user's properties and requests
-- ✅ **Toggle user roles** - Add/remove roles from users
-- ✅ **Delete users** - Remove users from system
-- ✅ **View all properties** - Admin property listing
-- ✅ **View all requests** - Admin request monitoring
-- ✅ **View all messages** - Admin message oversight
-- ✅ **Statistics page** - Detailed stats by status and role
-- ✅ **Seed roles** - Initialize system roles
+- **Comprehensive Statistics**: Visual breakdown of system data:
+    - Property Status Distribution (Available vs Sold).
+    - Monthly Request Trends (Last 6 months).
+    - User Distribution by Role.
+    - Top 5 Most Requested Properties.
+    - Monthly Message Trends.
+- **User Management**: List, search, and view details of all users.
+- **Role Management**: Dynamically add or remove roles (Admin, Agent, Client) for any user.
+- **User Deletion**: Ability to remove users from the system.
+- **System Oversight**: Full access to view all properties, requests, and messages.
+- **Seeding**: Utilities to initialize system roles.
 
-### 6. Home & Public Pages (HomeController)
-- ✅ **Homepage** - Featured/latest available properties
-- ✅ **Privacy page**
-- ✅ **Error handling**
+### 6. Public Pages & User Experience (HomeController)
+- **Hero Section**: Dynamic landing page with call-to-action buttons for registration/login.
+- **Featured Properties**: Showcase of latest available listings.
+- **Value Propositions**: Targeted information sections for both Buyers/Sellers and Property Owners.
+- **Why Choose Us**: Highlighted platform benefits and statistics.
+- **Contact Info**: Integrated contact section with location and communication details.
+- **Privacy & Error Handling**: Standard support pages.
 
 ## Database Entities
 
 ### ApplicationUser (extends IdentityUser)
-- FirstName, LastName
-- OwnedProperties (navigation)
-- SentMessages, ReceivedMessages (navigations)
-- Requests (navigation)
+- Attributes: FirstName, LastName
+- Navigations: OwnedProperties, SentMessages, ReceivedMessages, Requests
 
 ### Property
-- Id, Title, Description, Address
-- Price, Bedrooms, Bathrooms, Area
-- Status (Available, Sold, Rented, etc.)
-- OwnerId (foreign key to ApplicationUser)
-- Images (navigation to PropertyImage collection)
+- Attributes: Id, Title, Description, Address, Price, Bedrooms, Bathrooms, Area, Status
+- Relations: OwnerId (User), Images (PropertyImage collection)
 
 ### PropertyImage
-- Id, Url
-- PropertyId (foreign key)
+- Attributes: Id, Url, PropertyId
 
 ### Request
-- Id, PropertyId, UserId
-- Notes, Status (Pending, Approved, Rejected)
-- CreatedAt
+- Attributes: Id, PropertyId, UserId, Notes, Status, CreatedAt
 
 ### Message
-- Id, FromUserId, ToUserId
-- Subject, Body, SentAt
+- Attributes: Id, FromUserId, ToUserId, Subject, Body, SentAt
 
-## View Models Created
+## View Models
 
-1. **LoginViewModel** - Email, Password, RememberMe
-2. **RegisterViewModel** - FirstName, LastName, Email, Password, ConfirmPassword, Role
-3. **PropertyCreateViewModel** - Property fields + image upload support
-4. **RequestCreateViewModel** - PropertyId, Notes
-5. **MessageCreateViewModel** - ToUserEmail, Subject, Body
+1. **LoginViewModel**: Email, Password, RememberMe
+2. **RegisterViewModel**: Personal info, Role selection
+3. **EditProfileViewModel**: First Name, Last Name updates
+4. **ChangePasswordViewModel**: Password security updates
+5. **PropertyCreateViewModel**: Property details + Multi-image upload
+6. **RequestCreateViewModel**: Inquiry details
+7. **MessageCreateViewModel**: Messaging structure
+8. **DashboardStatisticsViewModel**: Data structure for Admin charts
 
 ## Database Configuration
 
@@ -95,15 +93,13 @@ This is a complete real estate management platform built with ASP.NET Core 9.0, 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Port=3306;Database=realestate_db;User=root;Password=ChangeMe123!;"
+    "DefaultConnection": "Server=localhost;Database=realestate;User=root;Password=password"
   }
 }
 ```
-
-**⚠️ IMPORTANT**: Update the MySQL password in `appsettings.json` to match your MySQL server.
+**Important**: Update the MySQL password in `appsettings.json` to match your local MySQL server configuration.
 
 ### Default Seeded Users
-
 The system automatically seeds three test users on first run:
 
 1. **Admin User**
@@ -130,103 +126,67 @@ The system automatically seeds three test users on first run:
 
 ### Steps
 
-1. **Update database connection**:
-   - Open `appsettings.json`
-   - Update the password in the connection string to match your MySQL root password
+1. **Update Database Connection**:
+   - Open `appsettings.json`.
+   - Update the connection string password to match your MySQL root password.
 
-2. **Run the application**:
-   - The easiest way is to run the helper script in the root folder:
+2. **Run the Application**:
+   - Use the helper script:
      ```powershell
      .\run-website.ps1
      ```
-   - Or manually in PowerShell:
+   - Or manually via dotnet CLI:
      ```powershell
-     $env:Path += ";C:\Users\medam\.dotnet"; dotnet run --project "WebApplication4\WebApplication4.csproj" --launch-profile "http"
+     dotnet run --project "WebApplication4\WebApplication4.csproj" --launch-profile "http"
      ```
 
-3. **The application will**:
-   - Automatically create the database `realestate_db`
-   - Apply all migrations
-   - Seed roles (Admin, Client, Agent)
-   - Create default users
-   - Start the web server
+3. **Initialization**:
+   - The application will automatically create the database `realestate`.
+   - Apply pending migrations.
+   - Seed default roles and users.
+   - Start the web server.
 
-4. **Access the application**:
-   - Open browser to `http://localhost:5119` or `https://localhost:7115`
-   - Login with one of the seeded accounts
+4. **Access**:
+   - Open browser to `http://localhost:5119` or the port indicated in the console.
 
 ## Project Structure
 
 ```
 Controllers/
-  ├── AccountController.cs       - Login, Register, Logout
-  ├── PropertiesController.cs    - Property CRUD + Images
-  ├── RequestsController.cs      - Request management
-  ├── MessagesController.cs      - Messaging system
-  ├── AdminController.cs         - Admin dashboard & management
-  └── HomeController.cs          - Public pages
+  ├── AccountController.cs       - Authentication & Profile Management
+  ├── PropertiesController.cs    - Property Listings & CRUD
+  ├── RequestsController.cs      - Inquiries & Status Workflow
+  ├── MessagesController.cs      - User Messaging
+  ├── AdminController.cs         - System Administration & Stats
+  └── HomeController.cs          - Landing Page & Public Content
 
 Models/
-  ├── ApplicationUser.cs         - User entity
-  ├── Property.cs                - Property entity
-  ├── PropertyImage.cs           - Property image entity
-  ├── Request.cs                 - Request entity
-  └── Message.cs                 - Message entity
+  ├── ApplicationUser.cs
+  ├── Property.cs
+  ├── PropertyImage.cs
+  ├── Request.cs
+  └── Message.cs
 
 ViewModels/
   ├── LoginViewModel.cs
   ├── RegisterViewModel.cs
+  ├── EditProfileViewModel.cs
+  ├── ChangePasswordViewModel.cs
   ├── PropertyCreateViewModel.cs
   ├── RequestCreateViewModel.cs
-  └── MessageCreateViewModel.cs
+  ├── MessageCreateViewModel.cs
+  └── DashboardStatisticsViewModel.cs
 
 Data/
-  ├── ApplicationDbContext.cs    - EF Core DbContext
-  ├── DbInitializer.cs           - Database seeding
-  └── DesignTimeDbContextFactory.cs - EF migrations support
+  ├── ApplicationDbContext.cs
+  ├── DbInitializer.cs
+  └── DesignTimeDbContextFactory.cs
 
 Views/
-  ├── Account/                   - Login, Register views
-  ├── Properties/                - Property views
-  ├── Requests/                  - Request views
-  ├── Messages/                  - Message views
-  ├── Admin/                     - Admin dashboard views
-  └── Home/                      - Homepage, Privacy
+  ├── Account/
+  ├── Properties/
+  ├── Requests/
+  ├── Messages/
+  ├── Admin/
+  └── Home/
 ```
-
-## Key Features
-
-### Authorization
-- Public users can view properties
-- Authenticated users can create properties and requests
-- Property owners can edit/delete their properties
-- Property owners can manage requests for their properties
-- Admins have full access to everything
-
-### Image Upload
-- Properties support multiple image uploads
-- Images stored in `wwwroot/uploads/properties/`
-- Each image gets a unique GUID filename
-- Images can be deleted individually
-
-### Database Migrations
-- Initial migration includes all entities
-- Identity tables (AspNetUsers, AspNetRoles, etc.)
-- Custom entities (Properties, Requests, Messages, PropertyImages)
-- Proper foreign key relationships and indexes
-
-## Next Steps
-
-1. **Update MySQL password** in appsettings.json
-2. **Run the application**: `dotnet run`
-3. **Login** with admin@realestate.com / Admin@123
-4. **Create properties**, manage users, handle requests
-
-## Notes
-
-- The project uses MySQL via Pomelo.EntityFrameworkCore.MySql 9.0.0
-- Entity Framework Core 9.0.0
-- ASP.NET Core Identity for authentication
-- Bootstrap 5 for UI (already included in layout)
-- The database will be automatically created and seeded on first run
-
