@@ -108,35 +108,17 @@
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal@(user.Id)" title="Delete User">
+                                                data-bs-toggle="modal" data-bs-target="#deleteUserModal" 
+                                                data-user-id="@user.Id"
+                                                data-user-name="@user.FirstName @user.LastName" 
+                                                title="Delete User">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
 
-                            <!-- Delete Confirmation Modal -->
-                            <div class="modal fade" id="deleteModal@(user.Id)" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Confirm Delete</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Are you sure you want to delete user <strong>@user.FirstName @user.LastName</strong>?</p>
-                                            <p class="text-danger"><i class="bi bi-exclamation-triangle"></i> This action cannot be undone!</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <form asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@user.Id" method="post" class="d-inline">
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-danger">Delete User</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                         }
                     </tbody>
                 </table>
@@ -165,6 +147,30 @@
     </div>
 </div>
 
+<!-- Shared Delete Confirmation Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete user <strong id="modalUserName"></strong>?</p>
+                <p class="text-danger"><i class="bi bi-exclamation-triangle"></i> This action cannot be undone!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-controller="Admin" asp-action="DeleteUser" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="modalUserId" />
+                    <button type="submit" class="btn btn-danger">Delete User</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         // Search functionality
@@ -177,6 +183,22 @@
                 row.style.display = text.includes(searchValue) ? '' : 'none';
             });
         });
+
+        // Shared Delete Modal Handler
+        var deleteModalEl = document.getElementById('deleteUserModal');
+        if (deleteModalEl) {
+            deleteModalEl.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var userId = button.getAttribute('data-user-id');
+                var userName = button.getAttribute('data-user-name');
+                
+                var modalUserName = deleteModalEl.querySelector('#modalUserName');
+                var modalInput = deleteModalEl.querySelector('#modalUserId');
+                
+                modalUserName.textContent = userName;
+                modalInput.value = userId;
+            });
+        }
     </script>
 }
 
