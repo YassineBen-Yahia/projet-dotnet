@@ -14,17 +14,20 @@ public class AccountController : Controller
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ApplicationDbContext _db;
+    private readonly IWebHostEnvironment _env;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager,
-        ApplicationDbContext db)
+        ApplicationDbContext db,
+        IWebHostEnvironment env)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
         _db = db;
+        _env = env;
     }
 
     [HttpGet]
@@ -251,6 +254,37 @@ public class AccountController : Controller
         if (user == null)
             return NotFound();
 
+        var userId = user.Id;
+
+        // 1. Cleanup Properties and Images
+        var properties = await _db.Properties.Include(p => p.Images).Where(p => p.OwnerId == userId).ToListAsync();
+        foreach (var property in properties)
+        {
+            foreach (var image in property.Images)
+            {
+                var imagePath = Path.Combine(_env.WebRootPath, image.Url.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+        }
+        _db.Properties.RemoveRange(properties);
+
+        // 2. Cleanup Requests (sent or received)
+        var requests = await _db.Requests
+            .Where(r => r.UserId == userId || r.Property!.OwnerId == userId)
+            .ToListAsync();
+        _db.Requests.RemoveRange(requests);
+
+        // 3. Cleanup Messages (sent or received)
+        var messages = await _db.Messages
+            .Where(m => m.FromUserId == userId || m.ToUserId == userId)
+            .ToListAsync();
+        _db.Messages.RemoveRange(messages);
+
+        await _db.SaveChangesAsync();
+
         await _signInManager.SignOutAsync();
         var result = await _userManager.DeleteAsync(user);
 
@@ -259,7 +293,7 @@ public class AccountController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        // If delete fails, sign back in (best effort) or just redirect
+        // If delete fails, redirect to index with error (unlikely after cleanup)
         TempData["Error"] = "Failed to delete account.";
         return RedirectToAction("Index");
     }

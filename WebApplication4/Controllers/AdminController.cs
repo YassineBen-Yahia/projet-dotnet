@@ -15,15 +15,18 @@ public class AdminController : Controller
     private readonly ApplicationDbContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IWebHostEnvironment _env;
 
     public AdminController(
         ApplicationDbContext db,
         UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole> roleManager)
+        RoleManager<IdentityRole> roleManager,
+        IWebHostEnvironment env)
     {
         _db = db;
         _userManager = userManager;
         _roleManager = roleManager;
+        _env = env;
     }
 
     // GET: Admin Dashboard
@@ -140,10 +143,39 @@ public class AdminController : Controller
         if (user == null)
             return NotFound();
 
+        // 1. Cleanup Properties and Images
+        var properties = await _db.Properties.Include(p => p.Images).Where(p => p.OwnerId == id).ToListAsync();
+        foreach (var property in properties)
+        {
+            foreach (var image in property.Images)
+            {
+                var imagePath = Path.Combine(_env.WebRootPath, image.Url.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+        }
+        _db.Properties.RemoveRange(properties);
+
+        // 2. Cleanup Requests (sent or received)
+        var requests = await _db.Requests
+            .Where(r => r.UserId == id || r.Property!.OwnerId == id)
+            .ToListAsync();
+        _db.Requests.RemoveRange(requests);
+
+        // 3. Cleanup Messages (sent or received)
+        var messages = await _db.Messages
+            .Where(m => m.FromUserId == id || m.ToUserId == id)
+            .ToListAsync();
+        _db.Messages.RemoveRange(messages);
+
+        await _db.SaveChangesAsync();
+
         var result = await _userManager.DeleteAsync(user);
         if (result.Succeeded)
         {
-            TempData["Success"] = "User deleted successfully!";
+            TempData["Success"] = "User and all related data deleted successfully!";
             return RedirectToAction(nameof(Users));
         }
 
