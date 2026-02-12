@@ -19,7 +19,7 @@ public class Property
 
     public int Bathrooms { get; set; }
 
-    public double Area { get; set; }
+    public int Area { get; set; }
 
     public string Status { get; set; } = "Available";
 

@@ -31,8 +31,8 @@ public class PropertyCreateViewModel
 
     [Required]
     [Display(Name = "Area (sq ft)")]
-    [Range(0, double.MaxValue)]
-    public double Area { get; set; }
+    [Range(0, int.MaxValue)]
+    public int Area { get; set; }
 
     [Required]
     [Display(Name = "Status")]

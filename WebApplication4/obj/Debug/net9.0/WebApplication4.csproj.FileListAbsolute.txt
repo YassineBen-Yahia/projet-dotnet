@@ -492,7 +492,6 @@ c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\
 c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\scopedcss\bundle\WebApplication4.styles.css
 c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\scopedcss\projectbundle\WebApplication4.bundle.scp.css
-c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\r457uy3xb5-urr1bolv4f.gz
 c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\grq9cvkzam-61n19gt1b8.gz
 c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\d3tds3vylr-xtxxf3hu2r.gz
 c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\h3zmpu7nnw-nakmwdwsxp.gz
@@ -568,3 +567,4 @@ c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\
 c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\WebApplication4.pdb
 c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\WebApplication4.genruntimeconfig.cache
 c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\ref\WebApplication4.dll
+c:\Users\medam\OneDrive\Bureau\GL3\.NET\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\r457uy3xb5-xfjob27qvx.gz

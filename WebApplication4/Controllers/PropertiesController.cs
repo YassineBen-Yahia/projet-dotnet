@@ -42,11 +42,11 @@ public class PropertiesController : Controller
         return View(p);
     }
 
-    [Authorize(Roles = "Admin,Agent")]
+    [Authorize]
     public IActionResult Create() => View(new PropertyCreateViewModel());
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Agent")]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(PropertyCreateViewModel model)
     {
@@ -103,17 +103,13 @@ public class PropertiesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize(Roles = "Admin,Agent")]
+    [Authorize]
     public async Task<IActionResult> Edit(Guid id)
     {
         var p = await _db.Properties.FindAsync(id);
         if (p == null) return NotFound();
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var isAdmin = User.IsInRole("Admin");
-
-        if (p.OwnerId != userId && !isAdmin)
-            return Forbid();
+        // All authenticated users can edit as per user request (all user types)
 
         var model = new PropertyCreateViewModel
         {
@@ -131,7 +127,7 @@ public class PropertiesController : Controller
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Agent")]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Guid id, PropertyCreateViewModel model)
     {
@@ -140,11 +136,7 @@ public class PropertiesController : Controller
         var property = await _db.Properties.FindAsync(id);
         if (property == null) return NotFound();
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var isAdmin = User.IsInRole("Admin");
-
-        if (property.OwnerId != userId && !isAdmin)
-            return Forbid();
+        // All authenticated users can edit as per user request (all user types)
 
         property.Title = model.Title;
         property.Description = model.Description;
@@ -198,11 +190,7 @@ public class PropertiesController : Controller
         var p = await _db.Properties.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == id);
         if (p == null) return NotFound();
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var isAdmin = User.IsInRole("Admin");
-
-        if (p.OwnerId != userId && !isAdmin)
-            return Forbid();
+        // All authenticated users can delete as per user request (all user types)
 
         // Delete associated images from disk
         foreach (var image in p.Images)
