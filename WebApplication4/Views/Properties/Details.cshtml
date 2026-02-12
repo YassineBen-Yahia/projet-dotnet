@@ -132,7 +132,7 @@
                         var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                         var isOwner = Model.OwnerId == currentUserId;
 
-                        @if (!isOwner)
+                        @if (!isOwner && !User.IsInRole("Admin"))
                         {
                             <div class="d-grid gap-2">
                                 <a class="btn btn-primary btn-lg" asp-controller="Requests" asp-action="Create" asp-route-propertyId="@Model.Id">
@@ -149,9 +149,18 @@
                         }
                         else
                         {
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle"></i> This is your property
-                            </div>
+                            @if (isOwner)
+                            {
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle"></i> This is your property
+                                </div>
+                            }
+                            else if (User.IsInRole("Admin"))
+                            {
+                                <div class="alert alert-info">
+                                    <i class="bi bi-shield-check"></i> Administrator Mode
+                                </div>
+                            }
                             <div class="d-grid gap-2">
                                 <a class="btn btn-warning" asp-controller="Properties" asp-action="Edit" asp-route-id="@Model.Id">
                                     <i class="bi bi-pencil"></i> Edit Property

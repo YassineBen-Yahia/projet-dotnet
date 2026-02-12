@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj": {}
+    "c:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj": {}
   },
   "projects": {
-    "C:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj": {
+    "c:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj",
+        "projectUniqueName": "c:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj",
         "projectName": "WebApplication4",
-        "projectPath": "C:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj",
+        "projectPath": "c:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj",
         "packagesPath": "C:\\Users\\medam\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\obj\\",
+        "outputPath": "c:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\medam\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "net9.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0": {
-            "targetAlias": "net8.0",
+          "net9.0": {
+            "targetAlias": "net9.0",
             "projectReferences": {}
           }
         },
@@ -37,33 +37,34 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "net9.0": {
+          "targetAlias": "net9.0",
           "dependencies": {
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[9.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[9.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[9.0.0, )"
             },
             "MySqlConnector": {
               "target": "Package",
-              "version": "[2.3.7, )"
+              "version": "[2.4.0, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[9.0.0, )"
             }
           },
           "imports": [
@@ -85,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\medam\\.dotnet\\sdk\\8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

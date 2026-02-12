@@ -20,6 +20,17 @@
             <nav class="nav-desktop">
                 @if (User?.Identity?.IsAuthenticated == true)
                 {
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Index" 
+                           class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                            <i class="bi bi-speedometer2"></i> Admin
+                        </a>
+                        <a asp-controller="Admin" asp-action="Statistics" 
+                           class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["Action"]?.ToString() == "Statistics" ? "active" : "")">
+                            <i class="bi bi-graph-up"></i> Statistics
+                        </a>
+                    }
                     <a asp-controller="Properties" asp-action="Index" 
                        class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Properties" ? "active" : "")">
                         <i class="bi bi-house-door"></i> Properties
@@ -87,9 +98,15 @@
                             {
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "active" : "")" 
+                                    <a class="dropdown-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" 
                                        asp-controller="Admin" asp-action="Index">
                                         <i class="bi bi-speedometer2"></i> Admin Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["Action"]?.ToString() == "Statistics" ? "active" : "")" 
+                                       asp-controller="Admin" asp-action="Statistics">
+                                        <i class="bi bi-graph-up"></i> Statistics
                                     </a>
                                 </li>
                             }

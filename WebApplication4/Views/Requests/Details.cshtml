@@ -121,7 +121,7 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex gap-2 flex-wrap">
-                        @if (isPropertyOwner && Model.Status == "Pending")
+                        @if ((isPropertyOwner || User.IsInRole("Admin")) && Model.Status == "Pending")
                         {
                             <form asp-action="UpdateStatus" asp-route-id="@Model.Id" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
@@ -140,16 +140,16 @@
                             </form>
                         }
                         
-                        @if (isPropertyOwner)
+                        @if (isPropertyOwner || User.IsInRole("Admin"))
                         {
                             <a asp-controller="Messages" asp-action="Create" asp-route-toEmail="@Model.User?.Email" class="btn btn-outline-primary">
                                 <i class="bi bi-envelope"></i> Contact Requester
                             </a>
                         }
                         
-                        @if (isRequester)
+                        @if (isRequester || User.IsInRole("Admin"))
                         {
-                            @if (Model.Property?.Owner != null)
+                            @if (isRequester && Model.Property?.Owner != null)
                             {
                                 <a asp-controller="Messages" asp-action="Create" asp-route-toEmail="@Model.Property.Owner.Email" class="btn btn-outline-primary">
                                     <i class="bi bi-envelope"></i> Contact Owner

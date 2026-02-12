@@ -1,0 +1,205 @@
+@model WebApplication4.ViewModels.DashboardStatisticsViewModel
+@{
+    ViewData["Title"] = "Graphical Statistics";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-graph-up"></i> Graphical Statistics</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- 1. Property Status Distribution -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Property Status Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="propertyStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. User Distribution by Role -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">User Distribution by Role</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="userRoleChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 2. Requests Trend -->
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Requests Trend (Last 6 Months)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="requestTrendChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 4. Top 5 Most Requested Properties -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Top 5 Most Requested Properties</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="topPropertiesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Messages Sent Trend -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Messages Sent Per Month</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="messageTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Data from ViewModel
+        const propertyStatusLabels = @Html.Raw(Json.Serialize(Model.PropertyStatusLabels));
+        const propertyStatusData = @Html.Raw(Json.Serialize(Model.PropertyStatusData));
+
+        const requestTrendLabels = @Html.Raw(Json.Serialize(Model.RequestTrendLabels));
+        const requestTrendData = @Html.Raw(Json.Serialize(Model.RequestTrendData));
+
+        const roleLabels = @Html.Raw(Json.Serialize(Model.RoleLabels));
+        const roleData = @Html.Raw(Json.Serialize(Model.RoleData));
+
+        const topPropertyLabels = @Html.Raw(Json.Serialize(Model.TopPropertyLabels));
+        const topPropertyData = @Html.Raw(Json.Serialize(Model.TopPropertyData));
+
+        const messageTrendLabels = @Html.Raw(Json.Serialize(Model.MessageTrendLabels));
+        const messageTrendData = @Html.Raw(Json.Serialize(Model.MessageTrendData));
+
+        // 1. Property Status Chart (Pie)
+        new Chart(document.getElementById('propertyStatusChart'), {
+            type: 'pie',
+            data: {
+                labels: propertyStatusLabels,
+                datasets: [{
+                    data: propertyStatusData,
+                    backgroundColor: ['#28a745', '#dc3545', '#ffc107', '#17a2b8', '#6c757d']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 2. Request Trend Chart (Line)
+        new Chart(document.getElementById('requestTrendChart'), {
+            type: 'line',
+            data: {
+                labels: requestTrendLabels,
+                datasets: [{
+                    label: 'Requests',
+                    data: requestTrendData,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+
+        // 3. User Role Chart (Doughnut)
+        new Chart(document.getElementById('userRoleChart'), {
+            type: 'doughnut',
+            data: {
+                labels: roleLabels,
+                datasets: [{
+                    data: roleData,
+                    backgroundColor: ['#6610f2', '#fd7e14', '#e83e8c', '#20c997']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 4. Top Properties Chart (Horizontal Bar)
+        new Chart(document.getElementById('topPropertiesChart'), {
+            type: 'bar',
+            data: {
+                labels: topPropertyLabels,
+                datasets: [{
+                    label: 'Requests Count',
+                    data: topPropertyData,
+                    backgroundColor: '#198754'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+
+        // 5. Message Trend Chart (Line)
+        new Chart(document.getElementById('messageTrendChart'), {
+            type: 'line',
+            data: {
+                labels: messageTrendLabels,
+                datasets: [{
+                    label: 'Messages',
+                    data: messageTrendData,
+                    borderColor: '#0dcaf0',
+                    backgroundColor: 'rgba(13, 202, 240, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

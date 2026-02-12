@@ -135,10 +135,14 @@ The system automatically seeds three test users on first run:
    - Update the password in the connection string to match your MySQL root password
 
 2. **Run the application**:
-   ```cmd
-   cd C:\Users\yby39\RiderProjects\WebApplication4\WebApplication4
-   dotnet run
-   ```
+   - The easiest way is to run the helper script in the root folder:
+     ```powershell
+     .\run-website.ps1
+     ```
+   - Or manually in PowerShell:
+     ```powershell
+     $env:Path += ";C:\Users\medam\.dotnet"; dotnet run --project "WebApplication4\WebApplication4.csproj" --launch-profile "http"
+     ```
 
 3. **The application will**:
    - Automatically create the database `realestate_db`

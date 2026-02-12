@@ -25,11 +25,18 @@ public class MessagesController : Controller
     public async Task<IActionResult> Index()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var isAdmin = User.IsInRole("Admin");
 
-        var messages = await _db.Messages
+        IQueryable<Message> query = _db.Messages
             .Include(m => m.FromUser)
-            .Include(m => m.ToUser)
-            .Where(m => m.FromUserId == userId || m.ToUserId == userId)
+            .Include(m => m.ToUser);
+
+        if (!isAdmin)
+        {
+            query = query.Where(m => m.FromUserId == userId || m.ToUserId == userId);
+        }
+
+        var messages = await query
             .OrderByDescending(m => m.SentAt)
             .ToListAsync();
 
@@ -120,9 +127,10 @@ public class MessagesController : Controller
             return NotFound();
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var isAdmin = User.IsInRole("Admin");
 
-        // Only sender or recipient can view
-        if (message.FromUserId != userId && message.ToUserId != userId)
+        // Only sender or recipient or Admin can view
+        if (message.FromUserId != userId && message.ToUserId != userId && !isAdmin)
             return Forbid();
 
         return View(message);
@@ -163,9 +171,10 @@ public class MessagesController : Controller
             return NotFound();
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var isAdmin = User.IsInRole("Admin");
 
-        // Only sender or recipient can delete
-        if (message.FromUserId != userId && message.ToUserId != userId)
+        // Only sender or recipient or Admin can delete
+        if (message.FromUserId != userId && message.ToUserId != userId && !isAdmin)
             return Forbid();
 
         _db.Messages.Remove(message);

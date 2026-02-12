@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication4.Data;
 using WebApplication4.Models;
 
+using WebApplication4.ViewModels;
+
 namespace WebApplication4.Controllers;
 
-[Authorize(Roles = "Admin,Agent")]
+[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly ApplicationDbContext _db;
@@ -149,69 +151,80 @@ public class AdminController : Controller
         return RedirectToAction(nameof(UserDetails), new { id });
     }
 
-    // GET: Admin/Properties
-    public async Task<IActionResult> Properties()
-    {
-        var properties = await _db.Properties
-            .Include(p => p.Owner)
-            .Include(p => p.Images)
-            .OrderByDescending(p => p.Id)
-            .ToListAsync();
 
-        return View(properties);
-    }
-
-    // GET: Admin/Requests
-    public async Task<IActionResult> Requests()
-    {
-        var requests = await _db.Requests
-            .Include(r => r.Property)
-            .Include(r => r.User)
-            .OrderByDescending(r => r.CreatedAt)
-            .ToListAsync();
-
-        return View(requests);
-    }
-
-    // GET: Admin/Messages
-    public async Task<IActionResult> Messages()
-    {
-        var messages = await _db.Messages
-            .Include(m => m.FromUser)
-            .Include(m => m.ToUser)
-            .OrderByDescending(m => m.SentAt)
-            .ToListAsync();
-
-        return View(messages);
-    }
 
     // GET: Admin/Statistics
     public async Task<IActionResult> Statistics()
     {
+        var model = new DashboardStatisticsViewModel();
+
+        // 1. Property Status Distribution
         var propertyStats = await _db.Properties
             .GroupBy(p => p.Status)
             .Select(g => new { Status = g.Key, Count = g.Count() })
             .ToListAsync();
+        model.PropertyStatusLabels = propertyStats.Select(s => s.Status).ToList();
+        model.PropertyStatusData = propertyStats.Select(s => s.Count).ToList();
 
+        // 2. Monthly Request Trend (Last 6 months)
+        var sixMonthsAgo = DateTime.UtcNow.AddMonths(-5);
         var requestStats = await _db.Requests
-            .GroupBy(r => r.Status)
-            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .Where(r => r.CreatedAt >= new DateTime(sixMonthsAgo.Year, sixMonthsAgo.Month, 1))
             .ToListAsync();
 
-        var userStats = new List<object>();
+        for (int i = 0; i < 6; i++)
+        {
+            var month = sixMonthsAgo.AddMonths(i);
+            var label = month.ToString("MMM yyyy");
+            var count = requestStats.Count(r => r.CreatedAt.Year == month.Year && r.CreatedAt.Month == month.Month);
+            model.RequestTrendLabels.Add(label);
+            model.RequestTrendData.Add(count);
+        }
+
+        // 3. User Distribution by Role
         var roles = await _roleManager.Roles.ToListAsync();
         foreach (var role in roles)
         {
             var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name!);
-            userStats.Add(new { Role = role.Name, Count = usersInRole.Count });
+            model.RoleLabels.Add(role.Name!);
+            model.RoleData.Add(usersInRole.Count);
         }
 
-        ViewBag.PropertyStats = propertyStats;
-        ViewBag.RequestStats = requestStats;
-        ViewBag.UserStats = userStats;
+        // 4. Top 5 Most Requested Properties
+        var topProperties = await _db.Requests
+            .GroupBy(r => r.PropertyId)
+            .Select(g => new { PropertyId = g.Key, Count = g.Count() })
+            .OrderByDescending(g => g.Count)
+            .Take(5)
+            .ToListAsync();
 
-        return View();
+        foreach (var item in topProperties)
+        {
+            var property = await _db.Properties.FindAsync(item.PropertyId);
+            if (property != null)
+            {
+                model.TopPropertyLabels.Add(property.Title);
+                model.TopPropertyData.Add(item.Count);
+            }
+        }
+
+        // 5. Monthly Message Trend (Last 6 months)
+        var messageStats = await _db.Messages
+            .Where(m => m.SentAt >= new DateTime(sixMonthsAgo.Year, sixMonthsAgo.Month, 1))
+            .ToListAsync();
+
+        for (int i = 0; i < 6; i++)
+        {
+            var month = sixMonthsAgo.AddMonths(i);
+            var label = month.ToString("MMM yyyy");
+            var count = messageStats.Count(m => m.SentAt.Year == month.Year && m.SentAt.Month == month.Month);
+            model.MessageTrendLabels.Add(label);
+            model.MessageTrendData.Add(count);
+        }
+
+        return View(model);
     }
+
 
     // POST: Admin/SeedRoles
     [HttpPost]
