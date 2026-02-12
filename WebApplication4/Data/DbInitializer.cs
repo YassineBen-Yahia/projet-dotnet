@@ -19,7 +19,7 @@ public static class DbInitializer
         await context.Database.MigrateAsync();
 
         // Seed roles
-        var roles = new[] { "Admin", "Client", "Agent" };
+        var roles = new[] { "Admin", "Client" };
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role))
@@ -65,26 +65,6 @@ public static class DbInitializer
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(clientUser, "Client");
-            }
-        }
-
-        // Seed a sample agent user
-        var agentEmail = "agent@realestate.com";
-        var agentUser = await userManager.FindByEmailAsync(agentEmail);
-        if (agentUser == null)
-        {
-            agentUser = new ApplicationUser
-            {
-                UserName = agentEmail,
-                Email = agentEmail,
-                EmailConfirmed = true,
-                FirstName = "Jane",
-                LastName = "Smith"
-            };
-            var result = await userManager.CreateAsync(agentUser, "Agent@123");
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(agentUser, "Agent");
             }
         }
     }

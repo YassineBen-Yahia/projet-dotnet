@@ -3004,19 +3004,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\medam\\.nuget\\packages\\": {}
+    "C:\\Users\\louay\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj",
+      "projectUniqueName": "C:\\Users\\louay\\OneDrive\\Bureau\\GL3\\Frameworks de Dev\\Projet\\projet-dotnet\\WebApplication4\\WebApplication4.csproj",
       "projectName": "WebApplication4",
-      "projectPath": "c:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\WebApplication4.csproj",
-      "packagesPath": "C:\\Users\\medam\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\medam\\OneDrive\\Bureau\\GL3\\.NET\\projet-dotnet\\WebApplication4\\obj\\",
+      "projectPath": "C:\\Users\\louay\\OneDrive\\Bureau\\GL3\\Frameworks de Dev\\Projet\\projet-dotnet\\WebApplication4\\WebApplication4.csproj",
+      "packagesPath": "C:\\Users\\louay\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\louay\\OneDrive\\Bureau\\GL3\\Frameworks de Dev\\Projet\\projet-dotnet\\WebApplication4\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\medam\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\louay\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -3088,7 +3088,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Users\\louay\\.dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

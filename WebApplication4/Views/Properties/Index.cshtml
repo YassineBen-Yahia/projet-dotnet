@@ -9,7 +9,7 @@
         <h2 class="section-title mb-1" style="text-align: left;">Properties</h2>
         <p class="text-muted small">Discover the best real estate opportunities</p>
     </div>
-    @if (User?.Identity?.IsAuthenticated == true && (isAdmin || User.IsInRole("Agent")))
+    @if (User?.Identity?.IsAuthenticated == true)
     {
         <a class="btn btn-primary" asp-action="Create">
             <i class="bi bi-plus-circle"></i> New Property

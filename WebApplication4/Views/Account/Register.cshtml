@@ -35,14 +35,7 @@
                         <input asp-for="ConfirmPassword" class="form-control" />
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="Role" class="form-label"></label>
-                        <select asp-for="Role" class="form-select">
-                            <option value="Client">Client</option>
-                            <option value="Agent">Agent</option>
-                        </select>
-                        <span asp-validation-for="Role" class="text-danger"></span>
-                    </div>
+                    <input type="hidden" asp-for="Role" value="Client" />
                     <button type="submit" class="btn btn-primary">Register</button>
                     <a asp-action="Login" class="btn btn-link">Already have an account? Login</a>
                 </form>

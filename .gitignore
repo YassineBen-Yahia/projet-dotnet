@@ -1,0 +1,57 @@
+# .gitignore for .NET
+# ------------------
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio files
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider / IntelliJ IDEA
+.idea/
+*.sln.DotSettings.user
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Database / Local DB
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Myapp specific
+WebApplication4/app.db
+WebApplication4/bin/
+WebApplication4/obj/
+
+# Uploads - Don't track user-uploaded images
+WebApplication4/wwwroot/uploads/
+
+# Settings
+appsettings.Development.json
+appsettings.Local.json

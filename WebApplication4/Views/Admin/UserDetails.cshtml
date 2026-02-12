@@ -51,7 +51,7 @@
                         {
                             @foreach (var role in roles)
                             {
-                                <span class="badge bg-@(role == "Admin" ? "danger" : role == "Agent" ? "primary" : "secondary") me-1">
+                                <span class="badge bg-@(role == "Admin" ? "danger" : "secondary") me-1">
                                     @role
                                 </span>
                             }
@@ -96,13 +96,13 @@
                 <div class="card-body">
                     <p class="text-muted">Assign or remove roles for this user</p>
                     <div class="row">
-                        @foreach (var roleName in new[] { "Admin", "Agent", "Client" })
+                        @foreach (var roleName in new[] { "Admin", "Client" })
                         {
                             var hasRole = roles != null && roles.Contains(roleName);
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="card @(hasRole ? "border-primary" : "")">
                                     <div class="card-body text-center">
-                                        <i class="bi bi-@(roleName == "Admin" ? "shield-fill-exclamation" : roleName == "Agent" ? "briefcase-fill" : "person-fill") fs-3 mb-2 text-@(roleName == "Admin" ? "danger" : roleName == "Agent" ? "primary" : "secondary")"></i>
+                                        <i class="bi bi-@(roleName == "Admin" ? "shield-fill-exclamation" : "person-fill") fs-3 mb-2 text-@(roleName == "Admin" ? "danger" : "secondary")"></i>
                                         <h6>@roleName</h6>
                                         <form asp-controller="Admin" asp-action="ToggleUserRole" method="post" class="mt-2">
                                             @Html.AntiForgeryToken()

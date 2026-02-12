@@ -231,7 +231,7 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SeedRoles()
     {
-        var roles = new[] {  "Client", "Agent" };
+        var roles = new[] { "Client" };
         
         foreach (var roleName in roles)
         {

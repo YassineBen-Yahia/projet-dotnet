@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-shield-exclamation text-danger" style="font-size: 5rem;"></i>
+                    </div>
+                    <h1 class="display-4 fw-bold text-danger mb-3">Access Denied</h1>
+                    <p class="lead text-muted mb-4">
+                        You don't have permission to access this page.
+                    </p>
+                    <p class="text-muted mb-4">
+                        This page requires specific permissions that your account doesn't have.
+                        @if (User?.Identity?.IsAuthenticated == true)
+                        {
+                            <span>
+                                Your current account does not have the necessary role to access this resource.
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                Please login with an account that has the required permissions.
+                            </span>
+                        }
+                    </p>
+                    
+                    <div class="d-flex gap-3 justify-content-center mt-4">
+                        @if (User?.Identity?.IsAuthenticated == true)
+                        {
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
+                                <i class="bi bi-house me-2"></i>Go to Homepage
+                            </a>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-secondary btn-lg">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                            </a>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-house me-2"></i>Go to Homepage
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-muted">
+                <small>
+                    <i class="bi bi-info-circle me-1"></i>
+                    Need admin access? Contact your system administrator.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

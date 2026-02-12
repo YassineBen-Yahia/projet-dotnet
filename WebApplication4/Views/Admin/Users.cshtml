@@ -85,7 +85,7 @@
                                     {
                                         @foreach (var role in roles)
                                         {
-                                            <span class="badge bg-@(role == "Admin" ? "danger" : role == "Agent" ? "primary" : "secondary") me-1">
+                                            <span class="badge bg-@(role == "Admin" ? "danger" : "secondary") me-1">
                                                 @role
                                             </span>
                                         }
@@ -146,7 +146,7 @@
 
     <!-- Statistics Section -->
     <div class="row mt-4">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card text-center shadow-sm">
                 <div class="card-body">
                     <h3 class="text-danger">@Model.Count(u => userRoles?.ContainsKey(u.Id) == true && userRoles[u.Id].Contains("Admin"))</h3>
@@ -154,15 +154,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-primary">@Model.Count(u => userRoles?.ContainsKey(u.Id) == true && userRoles[u.Id].Contains("Agent"))</h3>
-                    <p class="text-muted mb-0">Agents</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card text-center shadow-sm">
                 <div class="card-body">
                     <h3 class="text-secondary">@Model.Count(u => userRoles?.ContainsKey(u.Id) == true && userRoles[u.Id].Contains("Client"))</h3>
