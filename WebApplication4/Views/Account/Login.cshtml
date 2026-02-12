@@ -8,6 +8,17 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <h3 class="card-title mb-3">Login</h3>
+                
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger shadow-sm border-0 mb-4" role="alert" style="border-radius: var(--radius); background-color: #fff5f5; border-left: 4px solid #dc3545 !important;">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-octagon-fill me-2" style="font-size: 1.2rem; color: #dc3545;"></i>
+                            <div asp-validation-summary="All" class="text-danger fw-medium" style="list-style: none; padding: 0; margin: 0;"></div>
+                        </div>
+                    </div>
+                }
+
                 <form asp-action="Login" method="post">
                     <div class="mb-3">
                         <label asp-for="Email" class="form-label"></label>

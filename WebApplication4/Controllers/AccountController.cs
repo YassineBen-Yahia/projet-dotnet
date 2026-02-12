@@ -44,7 +44,7 @@ public class AccountController : Controller
         var user = await _userManager.FindByEmailAsync(model.Email);
         if (user == null)
         {
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ModelState.AddModelError(string.Empty, "Incorrect email or password. Please check your credentials and try again.");
             return View(model);
         }
 
@@ -58,7 +58,7 @@ public class AccountController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        ModelState.AddModelError(string.Empty, "Incorrect email or password. Please check your credentials and try again.");
         return View(model);
     }
 
