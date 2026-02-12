@@ -635,7 +635,7 @@ main[role="main"] {
 .header {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1030;
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border);
@@ -1887,7 +1887,7 @@ main[role="main"] {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1000;
+    z-index: 1100;
     display: flex;
     align-items: center;
     justify-content: center;
