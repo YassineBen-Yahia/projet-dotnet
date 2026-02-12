@@ -181,4 +181,86 @@ public class AccountController : Controller
 
         return View();
     }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize]
+    public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["Error"] = "Please check the form for errors.";
+            return RedirectToAction("Index");
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        user.FirstName = model.FirstName;
+        user.LastName = model.LastName;
+
+        var result = await _userManager.UpdateAsync(user);
+        if (result.Succeeded)
+        {
+            TempData["Success"] = "Profile updated successfully!";
+            return RedirectToAction("Index");
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+        
+        TempData["Error"] = "Failed to update profile.";
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["Error"] = "Please check the password form for errors.";
+            return RedirectToAction("Index");
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+        if (result.Succeeded)
+        {
+            TempData["Success"] = "Password changed successfully!";
+            await _signInManager.RefreshSignInAsync(user);
+            return RedirectToAction("Index");
+        }
+
+        TempData["Error"] = "Failed to change password. Please check your current password.";
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize]
+    public async Task<IActionResult> DeleteAccount()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        await _signInManager.SignOutAsync();
+        var result = await _userManager.DeleteAsync(user);
+
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        // If delete fails, sign back in (best effort) or just redirect
+        TempData["Error"] = "Failed to delete account.";
+        return RedirectToAction("Index");
+    }
 }

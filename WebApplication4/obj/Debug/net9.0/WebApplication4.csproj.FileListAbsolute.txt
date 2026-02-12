@@ -682,7 +682,6 @@ C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApp
 C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\scopedcss\bundle\WebApplication4.styles.css
 C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\scopedcss\projectbundle\WebApplication4.bundle.scp.css
-C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\r457uy3xb5-romwxkpkn5.gz
 C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\grq9cvkzam-61n19gt1b8.gz
 C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\d3tds3vylr-xtxxf3hu2r.gz
 C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\h3zmpu7nnw-nakmwdwsxp.gz
@@ -758,3 +757,4 @@ C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApp
 C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\WebApplication4.pdb
 C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\WebApplication4.genruntimeconfig.cache
 C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\ref\WebApplication4.dll
+C:\Users\louay\OneDrive\Bureau\GL3\Frameworks de Dev\Projet\projet-dotnet\WebApplication4\obj\Debug\net9.0\compressed\r457uy3xb5-su712w9xhn.gz
